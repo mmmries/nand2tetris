@@ -33,29 +33,19 @@ describe Assembler::Computation do
   end
 
   context "#binary" do
-    context "operation only" do
-      {
-        "0"   => "1110101010000000",
-        "1"   => "1110111110000000",
-        "-1"  => "1110111010000000",
-        "D&A" => "1110000000000000",
-      }.each do |command, binary|
+    {
+      "0"   => "1110101010000000",
+      "1"   => "1110111111000000",
+      "-1"  => "1110111010000000",
+      "D&A" => "1110000000000000",
+      "D=A"   => "1110110000010000",
+      "D=D+A" => "1110000010010000",
+      "M=D"   => "1110001100001000",
+      "D;JGE" => "1110001100000011",
+    }.each do |command, binary|
+      context "#{command}" do
         let(:str){ command }
-        it "it parses #{command}" do
-          computation.binary.should eq(binary)
-        end
-      end
-    end
-
-    context "full commands" do
-      {
-        "D=A"   => "1110110000010000",
-        "D=D+A" => "1110000010010000",
-        "M=D"   => "1110001100001000",
-        "D;JGE" => "1110001100000011",
-      }.each do |command, binary|
-        let(:str){ command }
-        it "it parses #{command}" do
+        it "creates a binary of #{binary}" do
           computation.binary.should eq(binary)
         end
       end

@@ -1,5 +1,6 @@
 require 'bundler/setup'
 require 'rspec/given'
+require 'pry'
 
 lib_dir = File.join(File.dirname(__FILE__),'..','lib')
 $: << lib_dir

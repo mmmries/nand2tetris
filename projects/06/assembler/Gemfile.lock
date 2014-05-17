@@ -1,9 +1,15 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    coderay (1.1.0)
     diff-lcs (1.2.5)
     given_core (3.5.4)
       sorcerer (>= 0.3.7)
+    method_source (0.8.2)
+    pry (0.9.12.6)
+      coderay (~> 1.0)
+      method_source (~> 0.8)
+      slop (~> 3.4)
     rspec (2.14.1)
       rspec-core (~> 2.14.0)
       rspec-expectations (~> 2.14.0)
@@ -15,10 +21,12 @@ GEM
       given_core (= 3.5.4)
       rspec (>= 2.12)
     rspec-mocks (2.14.6)
+    slop (3.5.0)
     sorcerer (1.0.2)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  pry
   rspec-given
