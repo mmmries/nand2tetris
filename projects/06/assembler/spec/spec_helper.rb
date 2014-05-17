@@ -1,6 +1,9 @@
 require 'bundler/setup'
 require 'rspec/given'
 
+lib_dir = File.join(File.dirname(__FILE__),'..','lib')
+$: << lib_dir
+
 RSpec.configure do |c|
   c.color = true
   c.order = :rand
