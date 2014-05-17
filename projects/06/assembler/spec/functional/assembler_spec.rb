@@ -10,7 +10,7 @@ describe Assembler do
     Then{ subject.assemble(assembly).should eq(binary) }
   end
 
-  context "a simple program with symbols" do
+  context "a simple program with location symbols" do
     Given(:assembly){ fixture("Max.asm") }
     Given(:binary){ fixture("Max.hack") }
     Then{ subject.assemble(assembly).should eq(binary) }
