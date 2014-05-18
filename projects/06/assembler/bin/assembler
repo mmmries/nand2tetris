@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+lib_dir = File.join(File.dirname(__FILE__),'..','lib')
+$: << lib_dir
+require 'assembler'
+
+path = ARGV.first
+output_path = path.gsub('.asm','.hack')
+
+binary = Assembler.assemble(File.read(path))
+
+File.open(output_path, "w") do |fp|
+  fp.write(binary)
+end
+
+puts "wrote #{output_path}"
