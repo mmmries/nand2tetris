@@ -15,4 +15,9 @@ describe VM::Instruction do
     expect(inst).to be_a(VM::Instruction::PushConstant)
     expect(inst.value).to eq(7)
   end
+
+  it "handles add commands" do
+    inst = inst("add")
+    expect(inst).to be_a(VM::Instruction::Add)
+  end
 end

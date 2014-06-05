@@ -1,3 +1,4 @@
+require 'vm/instruction/add'
 require 'vm/instruction/no_op'
 require 'vm/instruction/push_constant'
 
@@ -7,6 +8,8 @@ module VM
       line = strip_comment(line)
       if line.empty?
         NoOp.new(line)
+      elsif line == "add"
+        Add.new(line)
       else
         PushConstant.new(line)
       end

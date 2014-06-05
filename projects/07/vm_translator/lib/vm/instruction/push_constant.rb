@@ -7,8 +7,21 @@ module VM
         @value = line[14..-1].to_i
       end
 
+      def commented_assemblies
+        ["// push constant #{value}"] + to_assemblies
+      end
+
       def to_assemblies
-        nil
+        [
+          "@#{value}",
+          "D=A",
+          "@SP",
+          "A=M",
+          "M=D",
+          "D=A+1",
+          "@SP",
+          "M=D"
+        ]
       end
     end
   end
