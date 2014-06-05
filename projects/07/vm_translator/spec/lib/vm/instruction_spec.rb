@@ -10,4 +10,9 @@ describe VM::Instruction do
     expect(inst).to be_a(VM::Instruction::NoOp)
   end
 
+  it "handles push constant commands" do
+    inst = inst("push constant 7")
+    expect(inst).to be_a(VM::Instruction::PushConstant)
+    expect(inst.value).to eq(7)
+  end
 end
