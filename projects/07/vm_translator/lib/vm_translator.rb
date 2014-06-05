@@ -1,4 +1,5 @@
 require "vm_translator/version"
+require "vm_translator/cli"
 
 require 'vm/instruction'
 
