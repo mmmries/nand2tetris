@@ -15,7 +15,7 @@ module VM
           M=D
           A=M
           D=M
-          @R13
+          @R14
           M=D
 
           @SP
@@ -23,7 +23,7 @@ module VM
           M=D
           A=M
           D=M
-          @R14
+          @R13
           M=D
 
           @R13
