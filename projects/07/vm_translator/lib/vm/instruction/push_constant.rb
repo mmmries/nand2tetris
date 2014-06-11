@@ -4,7 +4,7 @@ module VM
       attr_reader :value
 
       def initialize(line)
-        @value = line[14..-1].to_i
+        @value = line.split.last.to_i
       end
 
       def commented_assemblies

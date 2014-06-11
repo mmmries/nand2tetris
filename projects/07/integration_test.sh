@@ -1,11 +1,16 @@
 #!/usr/bin/env ruby
 require 'pathname'
 
-root = File.dirname(__FILE__)
-test_files = Dir["#{root}/**/*.tst"].reject do |test_file|
-  test_file.include?("VME")
-end.map do |test_file|
-  Pathname.new(test_file)
+test_files = []
+if ARGV.empty?
+  root = File.dirname(__FILE__)
+  test_files = Dir["#{root}/**/*.tst"].reject do |test_file|
+    test_file.include?("VME")
+  end.map do |test_file|
+    Pathname.new(test_file)
+  end
+else
+  test_files = ARGV
 end
 
 test_files.each do |test_file|
