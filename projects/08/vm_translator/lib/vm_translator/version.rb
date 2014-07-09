@@ -1,0 +1,3 @@
+module VmTranslator
+  VERSION = "0.0.1"
+end

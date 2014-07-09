@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+$: << File.join(File.dirname(File.dirname(__FILE__)), 'lib')
+require 'vm_translator'
+
+VmTranslator::CLI.start(ARGV)
