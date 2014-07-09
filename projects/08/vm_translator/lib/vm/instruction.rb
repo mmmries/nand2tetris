@@ -27,7 +27,7 @@ require 'vm/instruction/pop_that'
 require 'vm/instruction/pop_this'
 
 require 'vm/instruction/label'
-# require 'vm/instruction/goto'
+require 'vm/instruction/goto'
 require 'vm/instruction/if_goto'
 
 module VM
