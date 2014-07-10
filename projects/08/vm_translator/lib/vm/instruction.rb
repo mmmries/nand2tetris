@@ -30,6 +30,9 @@ require 'vm/instruction/label'
 require 'vm/instruction/goto'
 require 'vm/instruction/if_goto'
 
+require 'vm/instruction/function'
+require 'vm/instruction/return'
+
 module VM
   module Instruction
     def self.build_for(line)
@@ -38,7 +41,6 @@ module VM
 
       one_word_klass = line.split[0].split('-').map{|w| w.capitalize}.join
       two_word_klass = line.split[0..1].map{|w| w.capitalize}.join
-      puts one_word_klass
       if const_defined?("VM::Instruction::#{one_word_klass}")
         klass = const_get(one_word_klass)
       elsif const_defined?("VM::Instruction::#{two_word_klass}")
