@@ -1,7 +1,7 @@
 module VM
   module Instruction
     class Sub
-      def initialize(line)
+      def initialize(line, context)
       end
 
       def commented_assemblies

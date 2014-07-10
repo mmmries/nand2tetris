@@ -1,9 +1,10 @@
 module VM
   module Instruction
     class Function
-      attr_reader :name, :arity
+      attr_reader :name, :arity, :context
 
-      def initialize(line)
+      def initialize(line, context)
+        @context = context
         _, @name, arity = line.split
         @arity = arity.to_i
       end
@@ -26,7 +27,7 @@ module VM
 
       def initialize_local_variables_assemblies
         1.upto(arity).map do |idx|
-          PushConstant.new("0").to_assemblies
+          PushConstant.new("0", context).to_assemblies
         end.flatten
       end
     end

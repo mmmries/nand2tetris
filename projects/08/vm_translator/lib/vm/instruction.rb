@@ -35,7 +35,7 @@ require 'vm/instruction/return'
 
 module VM
   module Instruction
-    def self.build_for(line)
+    def self.build_for(line, context)
       line = strip_comment(line)
       return NoOp.new if line.empty?
 
@@ -48,7 +48,7 @@ module VM
       else
         raise ArgumentError.new("Unrecognized command #{line}")
       end
-      klass.new(line)
+      klass.new(line, context)
     end
 
     def self.strip_comment(line)

@@ -6,7 +6,7 @@ module VmTranslator
     def translate_file(vm_file)
       vm_file = Pathname.new(vm_file)
       asm_file = vm_file.sub(".vm",".asm")
-      asm = VmTranslator.translate(File.read(vm_file))
+      asm = VmTranslator.translate_file(vm_file)
       File.open(asm_file, 'w') do |f|
         f.write(asm)
       end

@@ -1,7 +1,7 @@
 module VM
   module Instruction
     class Add
-      def initialize(line)
+      def initialize(line, context)
 
       end
 

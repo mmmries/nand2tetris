@@ -3,7 +3,7 @@ module VM
     class PopThat
       attr_reader :value
 
-      def initialize(line)
+      def initialize(line, context)
         @value = line.split.last.to_i
       end
 
@@ -24,7 +24,7 @@ module VM
           M=M-1
           A=M
           D=M
-          
+
           @R13
           A=M
           M=D

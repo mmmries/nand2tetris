@@ -3,7 +3,7 @@ module VM
     class PushThat
       attr_reader :value
 
-      def initialize(line)
+      def initialize(line, context)
         @value = line.split.last.to_i
       end
 

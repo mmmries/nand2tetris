@@ -4,7 +4,7 @@ module VM
     class Eq
       attr_reader :id
 
-      def initialize(line)
+      def initialize(line, context)
         @id = SecureRandom.hex(4)
       end
 
