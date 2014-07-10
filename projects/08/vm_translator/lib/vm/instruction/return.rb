@@ -27,7 +27,7 @@ module VM
       end
 
       def ret_addr_to_r14
-        %w(@5 D=D-A @R14 M=D)
+        %w(@5 A=D-A D=M @R14 M=D)
       end
 
       def set_return_value

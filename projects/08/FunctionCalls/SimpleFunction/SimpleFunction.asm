@@ -157,7 +157,8 @@ D=M
 @R13
 M=D
 @5
-D=D-A
+A=D-A
+D=M
 @R14
 M=D
 @SP

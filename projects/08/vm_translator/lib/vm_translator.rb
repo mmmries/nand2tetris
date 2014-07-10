@@ -27,6 +27,14 @@ module VmTranslator
   end
 
   def self.preamble
+    init_sp + call_sys_init
+  end
+
+  def self.init_sp
     %w(@256 D=A @SP M=D)
+  end
+
+  def self.call_sys_init
+    VM::Instruction::Call.new("call Sys.init 0", nil).commented_assemblies
   end
 end
