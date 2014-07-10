@@ -13,6 +13,16 @@ module VmTranslator
     end
     assemblies.flatten!
     assemblies.compact!
+    assemblies
+  end
+
+  def self.translate_dir(dir)
+    file_assemblies = Dir[dir.join("*.vm")].map do |vm_file|
+      translate_file(vm_file)
+    end
+    assemblies = [preamble] + file_assemblies
+    assemblies.flatten!
+    assemblies.compact!
     assemblies.join("\n") + "\n"
   end
 end
