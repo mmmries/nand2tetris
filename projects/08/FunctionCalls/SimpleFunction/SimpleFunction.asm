@@ -1,5 +1,5 @@
 // function SimpleFunction.test 2
-(fn_SimpleFunction.test)
+(SimpleFunction.test)
 @0
 D=A
 @SP

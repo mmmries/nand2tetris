@@ -20,7 +20,7 @@ module VM
 
       def label_assemblies
         %W(
-          (fn_#{name})
+          (#{name})
         )
       end
 
