@@ -17,8 +17,9 @@ module VmTranslator
     desc "translate_dir VM_DIR", "translate a directory of .vm files and generate a single .asm file"
     def translate_dir(dirname)
       dir = Pathname.new(dirname)
-      asm = VmTranslator.translate_dir(dir)
-      asm_file = dir.join( dir.basename + ".asm" )
+      assemblies = VmTranslator.translate_dir(dir)
+      asm = assemblies.join("\n") + "\n"
+      asm_file = dir.join( "#{dir.basename}.asm" )
       File.open(asm_file, 'w') do |f|
         f.write(asm)
       end

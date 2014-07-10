@@ -23,6 +23,10 @@ module VmTranslator
     assemblies = [preamble] + file_assemblies
     assemblies.flatten!
     assemblies.compact!
-    assemblies.join("\n") + "\n"
+    assemblies
+  end
+
+  def self.preamble
+    %w(@256 D=A @SP M=D)
   end
 end

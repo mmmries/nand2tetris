@@ -15,14 +15,12 @@ end
 
 test_files.each do |test_file|
   vm_file = test_file.sub('.tst','.vm')
-  test_dir = test_file.dirname
+  test_dir = File.dirname(test_file)
   asm_file = test_file.sub('.tst','.asm')
 
   if File.exists?(vm_file)
     `./vm_translator/bin/vm_translator translate_file #{vm_file}`
   else
-    puts "[PENDING] #{test_dir}"
-    next
     `./vm_translator/bin/vm_translator translate_dir #{test_dir}`
   end
 

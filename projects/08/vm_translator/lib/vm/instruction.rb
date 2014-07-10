@@ -32,6 +32,7 @@ require 'vm/instruction/if_goto'
 
 require 'vm/instruction/function'
 require 'vm/instruction/return'
+require 'vm/instruction/call'
 
 module VM
   module Instruction
