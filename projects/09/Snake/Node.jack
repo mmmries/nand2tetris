@@ -1,0 +1,9 @@
+class Node {
+  field Node next;
+  field int data;
+
+  constructor Node new(int new_data) {
+    let data = new_data;
+    return this;
+  }
+}

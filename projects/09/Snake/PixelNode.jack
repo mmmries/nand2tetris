@@ -1,0 +1,36 @@
+class PixelNode {
+  field int x, y;
+  field PixelNode next;
+
+  constructor PixelNode new(int new_x, int new_y){
+    let x = new_x;
+    let y = new_y;
+    let next = null;
+    return this;
+  }
+
+  method void dispose(){
+    if(~(next = null)){
+      do next.dispose();
+    }
+    do Memory.deAlloc(this);
+    return;
+  }
+
+  method int x(){
+    return x;
+  }
+
+  method int y(){
+    return y;
+  }
+
+  method PixelNode next(){
+    return next;
+  }
+
+  method void setNext(PixelNode next_node){
+    let next = next_node;
+    return;
+  }
+}

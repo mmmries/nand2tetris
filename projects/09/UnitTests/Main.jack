@@ -1,0 +1,45 @@
+class Main {
+  function void main() {
+    do Main.pixelNodeTests();
+    return;
+  }
+
+  function void pixelNodeTests(){
+    var PixelNode n1, n2;
+
+    do Output.printString("PixelNode:: ");
+    let n1 = PixelNode.new(10,20);
+    if ( n1.x() = 10 ) {
+      do Output.printString("P");
+    } else {
+      do Output.printString("F");
+    }
+
+    if ( n1.y() = 20 ) {
+      do Output.printString("P");
+    } else {
+      do Output.printString("F");
+    }
+
+    let n2 = PixelNode.new(20,30);
+    do n1.setNext(n2);
+
+    if ( n1.next() = n2 ) {
+      do Output.printString("P");
+    } else {
+      do Output.printString("F");
+    }
+
+    if ( n1.next() = n1 ) {
+      do Output.printString("F");
+    } else {
+      do Output.printString("P");
+    }
+
+    do n1.dispose();
+    do n2.dispose();
+
+    do Output.println();
+    return;
+  }
+}

@@ -1,0 +1,13 @@
+class Snake {
+  field Array pixels;
+
+  constructor Snake new() {
+    let pixels = Array.new(6);
+    return this;
+  }
+
+  method void dispose() {
+      do Memory.deAlloc(this);
+      return;
+  }
+}

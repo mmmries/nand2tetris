@@ -1,0 +1,17 @@
+class SnakeGame {
+  field Snake snake;
+  field int direction; // 0=none,1=up,2=down,3=left,4=right
+
+  constructor SnakeGame new() {
+    let square = Snake.new(256, 128);
+    let direction = 0;
+
+    return this;
+  }
+
+  method void dispose() {
+      do snake.dispose();
+      do Memory.deAlloc(this);
+      return;
+  }
+}
