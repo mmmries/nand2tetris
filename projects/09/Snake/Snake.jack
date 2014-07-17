@@ -75,6 +75,10 @@ class Snake {
     return;
   }
 
+  method PixelNode first(){
+    return pixels.first();
+  }
+
   method LinkedList pixels(){
     return pixels;
   }
