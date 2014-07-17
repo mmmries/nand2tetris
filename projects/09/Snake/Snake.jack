@@ -1,13 +1,81 @@
 class Snake {
-  field Array pixels;
+  field LinkedList pixels;
 
-  constructor Snake new() {
-    let pixels = Array.new(6);
+  constructor Snake new(int x, int y) {
+    var PixelNode pix;
+    let pix = PixelNode.new(x, y);
+    let pixels = LinkedList.new();
+    do pixels.push(pix);
     return this;
   }
 
   method void dispose() {
-      do Memory.deAlloc(this);
+    do pixels.dispose();
+    do Memory.deAlloc(this);
+    return;
+  }
+
+  method void crawlDown(bool increase_size){
+    var PixelNode last, new_pixel;
+    let last = pixels.last();
+    if( last.y() = 255){
       return;
+    }
+    let new_pixel = PixelNode.new(last.x(), last.y() + 1);
+    do pixels.push(new_pixel);
+
+    if( ~increase_size ){
+      do pixels.shift();
+    }
+    return;
+  }
+
+  method void crawlLeft(bool increase_size){
+    var PixelNode last, new_pixel;
+    let last = pixels.last();
+    if( last.x() = 0){
+      return;
+    }
+    let new_pixel = PixelNode.new(last.x() - 1, last.y());
+    do pixels.push(new_pixel);
+
+    if( ~increase_size ){
+      do pixels.shift();
+    }
+    return;
+  }
+
+  method void crawlRight(bool increase_size){
+    var PixelNode last, new_pixel;
+    let last = pixels.last();
+    if( last.x() = 511 ){
+      return;
+    }
+    let new_pixel = PixelNode.new(last.x() + 1, last.y());
+    do pixels.push(new_pixel);
+
+    if( ~increase_size ){
+      do pixels.shift();
+    }
+    return;
+  }
+
+  method void crawlUp(bool increase_size){
+    var PixelNode last, new_pixel;
+    let last = pixels.last();
+    if( last.y() = 0){
+      return;
+    }
+    let new_pixel = PixelNode.new(last.x(), last.y() + -1);
+    do pixels.push(new_pixel);
+
+    if( ~increase_size ){
+      do pixels.shift();
+    }
+    return;
+  }
+
+  method LinkedList pixels(){
+    return pixels;
   }
 }

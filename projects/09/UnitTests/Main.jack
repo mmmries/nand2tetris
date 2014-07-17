@@ -2,6 +2,7 @@ class Main {
   function void main() {
     do Main.pixelNodeTests();
     do Main.linkedListTests();
+    do Main.snakeTests();
     return;
   }
 
@@ -121,6 +122,89 @@ class Main {
     do n1.dispose();
     do n2.dispose();
 
+    do Output.println();
+    return;
+  }
+
+  function void snakeTests(){
+    var Snake snake;
+    var LinkedList list;
+    var PixelNode pix;
+
+    do Output.printString("Snake:: ");
+
+    let snake = Snake.new(5,5);
+    let list = snake.pixels();
+    let pix = list.first();
+    if ( list.last() = pix ) {
+      do Output.printString("P");
+    } else {
+      do Output.printString("F");
+    }
+
+    do snake.crawlRight(false);
+    let pix = list.first();
+    if ( pix.x() = 6 ) {
+      do Output.printString("P");
+    } else {
+      do Output.printString("F");
+    }
+    if ( list.last() = pix ) {
+      do Output.printString("P");
+    } else {
+      do Output.printString("F");
+    }
+
+    do snake.crawlRight(true);
+    let pix = list.first();
+    if ( pix.x() = 6 ) {
+      do Output.printString("P");
+    } else {
+      do Output.printString("F");
+    }
+    if ( list.last() = pix ) {
+      do Output.printString("F");
+    } else {
+      do Output.printString("P");
+    }
+
+    let pix = list.last();
+    if ( pix.x() = 7) {
+      do Output.printString("P");
+    } else {
+      do Output.printString("F");
+    }
+
+    do snake.crawlLeft(false);
+    do snake.crawlLeft(false);
+    do snake.crawlLeft(false);
+    do snake.crawlLeft(false);
+    do snake.crawlLeft(false);
+    do snake.crawlLeft(false);
+    do snake.crawlLeft(false);
+
+    let pix = list.last();
+    if ( pix.x() = 0) {
+      do Output.printString("P");
+    } else {
+      do Output.printString("F");
+    }
+
+    do snake.crawlLeft(false);
+    let pix = list.last();
+    if ( pix.x() = 0) {
+      do Output.printString("P");
+    } else {
+      do Output.printString("F");
+    }
+    let pix = list.first();
+    if ( pix.x() = 1) {
+      do Output.printString("P");
+    } else {
+      do Output.printString("F");
+    }
+
+    do snake.dispose();
     do Output.println();
     return;
   }
