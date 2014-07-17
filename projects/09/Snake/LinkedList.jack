@@ -1,0 +1,52 @@
+class LinkedList {
+  field PixelNode first, last;
+
+  constructor LinkedList new(){
+    let first = null;
+    let last = null;
+    return this;
+  }
+
+  method void dispose(){
+    if( ~(first = null) ){
+      do first.dispose();
+    }
+    do Memory.deAlloc(this);
+    return;
+  }
+
+  method void push(PixelNode p){
+    if( last = null ){
+      let first = p;
+      let last = p;
+    } else {
+      do last.setNext(p);
+      let last = p;
+    }
+    return;
+  }
+
+  method void shift(){
+    var PixelNode old;
+    let old = first;
+
+    if( old.next() = null ){
+      let first = null;
+      let last = null;
+    } else {
+      let first = old.next();
+    }
+    do old.setNext(null);
+    do old.dispose();
+
+    return;
+  }
+
+  method PixelNode first(){
+    return first;
+  }
+
+  method PixelNode last(){
+    return last;
+  }
+}

@@ -1,6 +1,87 @@
 class Main {
   function void main() {
     do Main.pixelNodeTests();
+    do Main.linkedListTests();
+    return;
+  }
+
+  function void linkedListTests(){
+    var LinkedList list;
+    var PixelNode n;
+
+    do Output.printString("LinkedList:: ");
+
+    let list = LinkedList.new();
+    let n = list.first();
+    if( n = null ){
+      do Output.printString("P");
+    } else {
+      do Output.printString("F");
+    }
+
+    let n = list.last();
+    if( n = null ){
+      do Output.printString("P");
+    } else {
+      do Output.printString("F");
+    }
+
+    let n = PixelNode.new(10,10);
+    do list.push(n);
+    let n = list.last();
+    if( n.x() = 10 ){
+      do Output.printString("P");
+    } else {
+      do Output.printString("F");
+    }
+
+    let n = PixelNode.new(20,20);
+    do list.push(n);
+    let n = list.last();
+    if( n.x() = 20 ){
+      do Output.printString("P");
+    } else {
+      do Output.printString("F");
+    }
+
+    let n = list.first();
+    if( n.x() = 10 ){
+      do Output.printString("P");
+    } else {
+      do Output.printString("F");
+    }
+
+    let n = list.last();
+    if( n.x() = 20 ){
+      do Output.printString("P");
+    } else {
+      do Output.printString("F");
+    }
+
+    let n = list.first();
+    let n = n.next();
+    if( n.x() = 20 ){
+      do Output.printString("P");
+    } else {
+      do Output.printString("F");
+    }
+
+    do list.shift();
+    let n = list.last();
+    if( n.x() = 20 ){
+      do Output.printString("P");
+    } else {
+      do Output.printString("F");
+    }
+    if( n = list.first() ){
+      do Output.printString("P");
+    } else {
+      do Output.printString("F");
+    }
+
+    do list.dispose();
+
+    do Output.println();
     return;
   }
 
@@ -8,6 +89,7 @@ class Main {
     var PixelNode n1, n2;
 
     do Output.printString("PixelNode:: ");
+
     let n1 = PixelNode.new(10,20);
     if ( n1.x() = 10 ) {
       do Output.printString("P");
