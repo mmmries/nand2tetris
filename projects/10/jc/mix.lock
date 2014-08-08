@@ -1,0 +1,1 @@
+%{"xml_builder": {:git, "https://github.com/hqmq/xml_builder.git", "2932de266f689fdb56eafb4239c63462ce1c517d", [branch: "master"]}}
