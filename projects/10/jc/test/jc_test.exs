@@ -4,7 +4,7 @@ defmodule JackCompilerTest do
 
   test "basic tokenization" do
     jack = """
-      if (x < 0) 
+      if (x < 0)
         {let state = "negative";}
     """
     tokens = [
@@ -22,6 +22,51 @@ defmodule JackCompilerTest do
       {:symbol, ";"},
       {:symbol, "}"},
     ]
+    assert tokenize(jack) == tokens
+  end
+
+  test "class tokenization" do
+    jack = """
+      class Main {
+          function void main() {
+              var SquareGame game;
+
+              let game = game;
+              do game.run();
+          }
+      }
+    """
+
+    tokens = [
+      {:keyword, "class"},
+      {:identifier, "Main"},
+      {:symbol, "{"},
+      {:keyword, "function"},
+      {:keyword, "void"},
+      {:identifier, "main"},
+      {:symbol, "("},
+      {:symbol, ")"},
+      {:symbol, "{"},
+      {:keyword, "var"},
+      {:identifier, "SquareGame"},
+      {:identifier, "game"},
+      {:symbol, ";"},
+      {:keyword, "let"},
+      {:identifier, "game"},
+      {:symbol, "="},
+      {:identifier, "game"},
+      {:symbol, ";"},
+      {:keyword, "do"},
+      {:identifier, "game"},
+      {:symbol, "."},
+      {:identifier, "run"},
+      {:symbol, "("},
+      {:symbol, ")"},
+      {:symbol, ";"},
+      {:symbol, "}"},
+      {:symbol, "}"},
+    ]
+
     assert tokenize(jack) == tokens
   end
 end
