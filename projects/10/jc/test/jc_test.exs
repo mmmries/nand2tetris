@@ -51,8 +51,10 @@ defmodule JackCompilerTest do
 
   test "multi-line comment" do
     jack = """
-      /* ohai guyz &%*(&)(*
-        Woot Woot woor */
+      /**
+        *  ohai guyz &%*(&)(*
+        *  Woot Woot woor
+       */
       if (x < 0)
         {let state = "negative";}
     """
@@ -73,7 +75,6 @@ defmodule JackCompilerTest do
     ]
     assert tokenize(jack) == tokens
   end
-
 
   test "class tokenization" do
     jack = """

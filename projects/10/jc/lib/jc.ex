@@ -13,6 +13,8 @@ defmodule JackCompiler do
   end
   defp tokenize(" "<>jack_str, tokens), do: tokenize(jack_str, tokens)
   defp tokenize("\n"<>jack_str, tokens), do: tokenize(jack_str, tokens)
+  defp tokenize("\r"<>jack_str, tokens), do: tokenize(jack_str, tokens)
+  defp tokenize("\t"<>jack_str, tokens), do: tokenize(jack_str, tokens)
   defp tokenize("class"<>jack_str, tokens), do: tokenize(jack_str, [{:keyword, "class"}|tokens])
   defp tokenize("constructor"<>jack_str, tokens), do: tokenize(jack_str, [{:keyword, "constructor"}|tokens])
   defp tokenize("function"<>jack_str, tokens), do: tokenize(jack_str, [{:keyword, "function"}|tokens])
@@ -66,6 +68,8 @@ defmodule JackCompiler do
             case Regex.named_captures(~r/\A"(?<s>[^"\n]*)"(?<rest>.*)/s, jack_str) do
               %{"s" => s, "rest" => rest} ->
                 tokenize(rest, [{:stringConstant,s}|tokens])
+              nil ->
+                Kernel.raise(ArgumentError, message: "I do not know how to tokenize this: "<>jack_str)
             end
         end
     end
