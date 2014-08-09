@@ -3,6 +3,14 @@ defmodule JackCompiler do
     tokenize(jack_str, [])
   end
 
+  defp tokenize("//"<>jack_str, tokens) do
+    %{"rest" => rest} = Regex.named_captures(~r/\A[^\n]*\n(?<rest>.*)/s, jack_str)
+    tokenize(rest, tokens)
+  end
+  defp tokenize("/*"<>jack_str, tokens) do
+    %{"rest" => rest} = Regex.named_captures(~r/\A.*?\*\/(?<rest>.*)/s, jack_str)
+    tokenize(rest, tokens)
+  end
   defp tokenize(" "<>jack_str, tokens), do: tokenize(jack_str, tokens)
   defp tokenize("\n"<>jack_str, tokens), do: tokenize(jack_str, tokens)
   defp tokenize("class"<>jack_str, tokens), do: tokenize(jack_str, [{:keyword, "class"}|tokens])
