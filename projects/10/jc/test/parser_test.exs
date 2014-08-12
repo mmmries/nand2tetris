@@ -1,6 +1,6 @@
 defmodule ParserTest do
   use ExUnit.Case
-  import JackParser, only: [parse: 1]
+  import Jack.Parser, only: [parse: 1]
 
   test "basic parse" do
     tokens = [

@@ -29,7 +29,7 @@ end
 
 def tokenize(jack_file)
   tmp = Tempfile.new("tokenized")
-  `cd #{MIX_PATH} && mix tokenizer #{jack_file} > #{tmp.path}`
+  `cd #{MIX_PATH} && mix tokenize #{jack_file} > #{tmp.path}`
   fail "Failed to tokenize #{jack_file}" unless $?.success?
   tmp
 end

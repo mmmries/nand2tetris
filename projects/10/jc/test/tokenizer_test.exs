@@ -1,6 +1,6 @@
 defmodule TokenizerTest do
   use ExUnit.Case
-  import JackCompiler, only: [tokenize: 1]
+  import Jack.Tokenizer, only: [tokenize: 1]
 
   test "basic tokenization" do
     jack = """

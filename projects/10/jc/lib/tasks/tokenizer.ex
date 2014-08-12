@@ -1,6 +1,6 @@
-defmodule Mix.Tasks.Tokenizer do
+defmodule Mix.Tasks.Tokenize do
   use Mix.Task
-  import JackCompiler, only: [tokenize: 1]
+  import Jack.Tokenizer, only: [tokenize: 1]
 
   @shortdoc "tokenize some jack code"
 

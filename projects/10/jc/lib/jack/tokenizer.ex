@@ -1,4 +1,4 @@
-defmodule JackCompiler do
+defmodule Jack.Tokenizer do
   def tokenize(jack_str) do
     tokenize(jack_str, [])
   end

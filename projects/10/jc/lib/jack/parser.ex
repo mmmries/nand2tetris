@@ -1,4 +1,4 @@
-defmodule JackParser do
+defmodule Jack.Parser do
   def parse(tokens) do
     class(tokens)
   end

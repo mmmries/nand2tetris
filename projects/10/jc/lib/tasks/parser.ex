@@ -7,8 +7,8 @@ defmodule Mix.Tasks.Parse do
     argv |>
       Enum.map(&File.read!/1) |>
       Enum.join("\n") |>
-      JackCompiler.tokenize |>
-      JackParser.parse |>
+      Jack.Tokenizer.tokenize |>
+      Jack.Parser.parse |>
       token_to_xml |>
       IO.write
   end
