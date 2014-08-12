@@ -1,4 +1,4 @@
-defmodule JackCompilerTest do
+defmodule TokenizerTest do
   use ExUnit.Case
   import JackCompiler, only: [tokenize: 1]
 
