@@ -59,7 +59,7 @@ defmodule Jack.Parser do
   defp sub_body(tree, [{:symbol,"{"}|tail]) do
     children = [{:symbol,"{"}]
     {children, tail} = var_decs(children, tail)
-    {children, tail} = statements(children, tail)
+    {children, tail} = Jack.Statements.parse(children, tail)
     [{:symbol,"}"}|tail] = tail
     children = children ++ [{:symbol,"}"}]
     subtree = {:subroutineBody, children}
@@ -78,71 +78,5 @@ defmodule Jack.Parser do
     {children, tail} = type(tree,tail)
     [{:identifier, name}|tail] = tail
     var_dec(children ++ [{:identifier, name}], tail)
-  end
-
-  defp statements(tree, tail) do
-    {children, tail} = statement([], tail)
-    {children, tail} = statement(children, tail)
-    {children, tail} = statement(children, tail)
-    {children, tail} = statement(children, tail)
-    subtree = [{:statements, children}]
-    {tree ++ subtree, tail}
-  end
-
-  defp statement(tree, [{:keyword,"let"},{:identifier,name},{:symbol,"="}|tail]) do
-    children = [{:keyword,"let"},{:identifier,name},{:symbol,"="}]
-    {children, tail} = expression(children, tail)
-    [{:symbol,";"}|tail] = tail
-    children = children ++ [{:symbol,";"}]
-    subtree = [{:letStatement, children}]
-    {tree ++ subtree, tail}
-  end
-  defp statement(tree, [{:keyword,"do"}|tail]) do
-    {children, tail} = sub_call([{:keyword,"do"}], tail)
-    [{:symbol,";"}|tail] = tail
-    children = children ++ [{:symbol,";"}]
-    subtree = [{:doStatement, children}]
-    {tree ++ subtree, tail}
-  end
-  defp statement(tree, [{:keyword,"return"},{:symbol,";"}|tail]) do
-    children = [{:keyword,"return"},{:symbol,";"}]
-    subtree = [{:returnStatement, children}]
-    {tree ++ subtree, tail}
-  end
-  defp statement(tree, [{:keyword,"return"}|tail]) do
-    {children, tail} = expression([keyword: "return"], tail)
-    [{:symbol,";"}|tail] = tail
-    children = children ++ [symbol: ";"]
-    subtree = [returnStatement: children]
-    {tree ++ subtree, tail}
-  end
-  defp statement(tree,tail), do: {tree, tail}
-
-  defp expression(tree,tail) do
-    {children, tail} = term([], tail)
-    subtree = [{:expression, children}]
-    {tree ++ subtree, tail}
-  end
-
-  defp term(tree,[{:identifier,id}|tail]) do
-    subtree = [{:term, [{:identifier, id}]}]
-    {tree ++ subtree, tail}
-  end
-  defp term(tree,[{:integerConstant,num}|tail]) do
-    subtree = [term: [integerConstant: num]]
-    {tree ++ subtree, tail}
-  end
-
-  defp sub_call(tree, [{:identifier,target},{:symbol,"."},{:identifier,method},{:symbol,"("}|tail]) do
-    children = [{:identifier,target},{:symbol,"."},{:identifier,method},{:symbol,"("}]
-    {children, tail} = expression_list(children,tail)
-    [{:symbol, ")"}|tail] = tail
-    children = children ++ [{:symbol,")"}]
-    {tree ++ children, tail}
-  end
-
-  defp expression_list(tree, tail) do
-    subtree = [{:expressionList, []}]
-    {tree ++ subtree, tail}
   end
 end
