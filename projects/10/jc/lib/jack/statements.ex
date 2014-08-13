@@ -42,4 +42,8 @@ defmodule Jack.Statements do
     {children, tail} = Jack.Expressions.parse(children,tail)
     {tree ++ children, tail}
   end
+  defp sub_call(tree,[{:identifier,m}|tail]) do
+    {children, tail} = Jack.Expressions.parse([identifier: m],tail)
+    {tree ++ children, tail}
+  end
 end

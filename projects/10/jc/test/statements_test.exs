@@ -3,7 +3,39 @@ defmodule Jack.StatementsTest do
   import Jack.Statements, only: [parse: 2, statement: 2]
   import Jack.Tokenizer, only: [tokenize: 1]
 
-  test "a let statement" do
+  test "a do statement with explicit receiver" do
+    jack = "do test.go();"
+    expected = [
+      doStatement: [
+        keyword: "do",
+        identifier: "test",
+        symbol: ".",
+        identifier: "go",
+        symbol: "(",
+        expressionList: [],
+        symbol: ")",
+        symbol: ";"]]
+
+    tokens = tokenize(jack)
+    assert statement([],tokens) == {expected,[]}
+  end
+
+  test "a do statement with implicit receiver" do
+    jack = "do go();"
+    expected = [
+      doStatement: [
+        keyword: "do",
+        identifier: "go",
+        symbol: "(",
+        expressionList: [],
+        symbol: ")",
+        symbol: ";"]]
+
+    tokens = tokenize(jack)
+    assert statement([],tokens) == {expected,[]}
+  end
+
+  test "a single statement" do
     jack = "let x = y;"
     expected = [
       statements: [
