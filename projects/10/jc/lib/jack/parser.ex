@@ -10,7 +10,7 @@ defmodule Jack.Parser do
       {:symbol, "{"}
     ]
     {children, tail} = class_var_dec(children, tail)
-    {children, tail} = subroutine_dec(children, tail)
+    {children, tail} = sub_dec(children, tail)
     [{:symbol, "}"}|tail] = tail
     children = children ++ [{:symbol,"}"}]
     {:class, children}
@@ -31,7 +31,7 @@ defmodule Jack.Parser do
     {tree ++ [{:identifier,name},{:symbol,";"}], tail}
   end
 
-  defp subroutine_dec(tree, [
+  defp sub_dec(tree, [
     {:keyword, "function"},
     {:keyword,"void"},
     {:identifier, fn_name},
@@ -49,7 +49,7 @@ defmodule Jack.Parser do
       subtree = {:subroutineDec, children}
       {tree ++ [subtree], tail}
   end
-  defp subroutine_dec(tree, tail), do: {tree, tail}
+  defp sub_dec(tree, tail), do: {tree, tail}
 
   defp parameter_list(tree, tail) do
     children = [{:parameterList,[]}]
