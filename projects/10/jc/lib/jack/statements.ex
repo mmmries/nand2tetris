@@ -37,11 +37,9 @@ defmodule Jack.Statements do
   end
   def statement(tree,tail), do: {tree, tail}
 
-  defp sub_call(tree, [{:identifier,target},{:symbol,"."},{:identifier,method},{:symbol,"("}|tail]) do
-    children = [{:identifier,target},{:symbol,"."},{:identifier,method},{:symbol,"("}]
-    {children, tail} = Jack.Expressions.expression_list(children,tail)
-    [{:symbol, ")"}|tail] = tail
-    children = children ++ [{:symbol,")"}]
+  defp sub_call(tree, [{:identifier,target},{:symbol,"."},{:identifier,m}|tail]) do
+    children = [{:identifier,target},{:symbol,"."},{:identifier,m}]
+    {children, tail} = Jack.Expressions.parse(children,tail)
     {tree ++ children, tail}
   end
 end
