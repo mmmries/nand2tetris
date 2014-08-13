@@ -1,5 +1,6 @@
 defmodule ParserTest do
   use ExUnit.Case
+  import Jack.Tokenizer, only: [tokenize: 1]
   import Jack.Parser, only: [parse: 1]
 
   test "basic parse" do
@@ -105,5 +106,35 @@ defmodule ParserTest do
     ]}
 
     assert parse(tokens) == parsed
+  end
+
+  test "understand class variable declarations" do
+    jack = """
+    class Jack {
+      field boolean debug;
+      static Jack singleton;
+    }
+    """
+
+    expected = {:class, [
+      {:keyword, "class"},
+      {:identifier, "Jack"},
+      {:symbol, "{"},
+      {:classVarDec, [
+        {:keyword, "field"},
+        {:keyword, "boolean"},
+        {:identifier, "debug"},
+        {:symbol, ";"}
+      ]},
+      {:classVarDec, [
+        {:keyword, "static"},
+        {:identifier, "Jack"},
+        {:identifier, "singleton"},
+        {:symbol, ";"}
+      ]},
+      {:symbol, "}"}
+    ]}
+
+    assert jack |> tokenize |> parse == expected
   end
 end
