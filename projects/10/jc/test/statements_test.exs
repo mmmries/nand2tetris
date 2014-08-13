@@ -35,6 +35,29 @@ defmodule Jack.StatementsTest do
     assert statement([],tokens) == {expected,[]}
   end
 
+  test "an if statement without an else" do
+    jack = "if(1){ do go(); }"
+    expected = [
+      ifStatement: [
+        keyword: "if",
+        symbol: "(",
+        expression: [term: [integerConstant: "1"]],
+        symbol: ")",
+        symbol: "{",
+        statements: [
+          doStatement: [
+            keyword: "do",
+            identifier: "go",
+            symbol: "(",
+            expressionList: [],
+            symbol: ")",
+            symbol: ";"]],
+        symbol: "}"]]
+
+    tokens = tokenize(jack)
+    assert statement([],tokens) == {expected,[]}
+  end
+
   test "a return statement" do
     jack = "return x;"
     expected = [

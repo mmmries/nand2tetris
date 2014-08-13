@@ -6,7 +6,7 @@ defmodule Jack.Statements do
   end
 
 #  defp parse_item(tree, [{:keyword,k}|tail]) when (k in ["do","if","let","return","while"]) do
-  defp parse_item(tree, [{:keyword,k}|tail]) when (k in ["do","let","return"]) do
+  defp parse_item(tree, [{:keyword,k}|tail]) when (k in ["do","if","let","return"]) do
     tail = [{:keyword, k}|tail]
     {tree, tail} = statement(tree, tail)
     parse_item(tree, tail)
@@ -38,6 +38,18 @@ defmodule Jack.Statements do
     [{:symbol,";"}|tail] = tail
     children = children ++ [symbol: ";"]
     subtree = [returnStatement: children]
+    {tree ++ subtree, tail}
+  end
+  def statement(tree, [{:keyword,"if"}|tail]) do
+    [{:symbol,"("}|tail] = tail
+    children = [keyword: "if", symbol: "("]
+    {children,tail} = Jack.Expressions.expression(children,tail)
+    [{:symbol,")"},{:symbol,"{"}|tail] = tail
+    children = children ++ [symbol: ")", symbol: "{"]
+    {children,tail} = parse(children,tail)
+    [{:symbol,"}"}|tail] = tail
+    children = children ++ [symbol: "}"]
+    subtree = [ifStatement: children]
     {tree ++ subtree, tail}
   end
   def statement(tree,tail), do: {tree, tail}
