@@ -70,6 +70,29 @@ defmodule Jack.StatementsTest do
     assert statement([],tokens) == {expected,[]}
   end
 
+  test "a while statement" do
+    jack = "while(x){ do go(); }"
+    expected = [
+      whileStatement: [
+        keyword: "while",
+        symbol: "(",
+        expression: [term: [identifier: "x"]],
+        symbol: ")",
+        symbol: "{",
+        statements: [
+          doStatement: [
+            keyword: "do",
+            identifier: "go",
+            symbol: "(",
+            expressionList: [],
+            symbol: ")",
+            symbol: ";"]],
+        symbol: "}"]]
+
+    tokens = tokenize(jack)
+    assert statement([],tokens) == {expected, []}
+  end
+
   test "a single statement" do
     jack = "let x = y;"
     expected = [
