@@ -1,12 +1,17 @@
 defmodule Jack.Statements do
   def parse(tree, tail) do
-    {children, tail} = statement([], tail)
-    {children, tail} = statement(children, tail)
-    {children, tail} = statement(children, tail)
-    {children, tail} = statement(children, tail)
+    {children, tail} = parse_item([],tail)
     subtree = [{:statements, children}]
     {tree ++ subtree, tail}
   end
+
+#  defp parse_item(tree, [{:keyword,k}|tail]) when (k in ["do","if","let","return","while"]) do
+  defp parse_item(tree, [{:keyword,k}|tail]) when (k in ["do","let","return"]) do
+    tail = [{:keyword, k}|tail]
+    {tree, tail} = statement(tree, tail)
+    parse_item(tree, tail)
+  end
+  defp parse_item(tree, tail), do: {tree, tail}
 
   def statement(tree, [{:keyword,"let"},{:identifier,name},{:symbol,"="}|tail]) do
     children = [{:keyword,"let"},{:identifier,name},{:symbol,"="}]

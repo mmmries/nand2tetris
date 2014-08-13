@@ -35,6 +35,18 @@ defmodule Jack.StatementsTest do
     assert statement([],tokens) == {expected,[]}
   end
 
+  test "a return statement" do
+    jack = "return x;"
+    expected = [
+      returnStatement: [
+        keyword: "return",
+        expression: [term: [identifier: "x"]],
+        symbol: ";"]]
+
+    tokens = tokenize(jack)
+    assert statement([],tokens) == {expected,[]}
+  end
+
   test "a single statement" do
     jack = "let x = y;"
     expected = [

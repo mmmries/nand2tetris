@@ -39,7 +39,7 @@ defmodule Jack.Parser do
     {tree ++ [{:identifier,name},{:symbol,";"}], tail}
   end
 
-  defp sub_dec(tree, [{:keyword, type}|tail]) when(type in ["constructor","function","method"]) do
+  defp sub_dec(tree, [{:keyword,type}|tail]) when (type in ["constructor","function","method"]) do
     children = [{:keyword, type}]
     {children,tail} = type_or_void(children,tail)
     [{:identifier,fn_name}|tail] = tail
