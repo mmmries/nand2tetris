@@ -111,7 +111,7 @@ defmodule ParserTest do
   test "understand class variable declarations" do
     jack = """
     class Jack {
-      field boolean debug;
+      field boolean debug, crash;
       static Jack singleton;
     }
     """
@@ -124,6 +124,8 @@ defmodule ParserTest do
         {:keyword, "field"},
         {:keyword, "boolean"},
         {:identifier, "debug"},
+        {:symbol,","},
+        {:identifier, "crash"},
         {:symbol, ";"}
       ]},
       {:classVarDec, [

@@ -18,12 +18,18 @@ defmodule Jack.Parser do
 
   defp class_var_dec(tree, [{:keyword,kw}|tail]) when(kw in ["static","field"]) do
     {children, tail} = type([keyword: kw],tail)
-    [{:identifier,name},{:symbol,";"}|tail] = tail
-    children = children ++ [{:identifier,name},{:symbol,";"}]
+    {children, tail} = identifier_list(children, tail)
     subtree = [classVarDec: children]
     class_var_dec(tree ++ subtree, tail)
   end
   defp class_var_dec(tree, tail), do: {tree, tail}
+
+  defp identifier_list(tree, [{:identifier,name},{:symbol,","}|tail]) do
+    identifier_list(tree ++ [{:identifier,name},{:symbol,","}], tail)
+  end
+  defp identifier_list(tree, [{:identifier,name},{:symbol,";"}|tail]) do
+    {tree ++ [{:identifier,name},{:symbol,";"}], tail}
+  end
 
   defp subroutine_dec(tree, [
     {:keyword, "function"},
