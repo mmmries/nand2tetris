@@ -3,6 +3,14 @@ defmodule Jack.Parser do
     class(tokens)
   end
 
+  def identifier(tree,[{:identifier,id}|tail]), do: {tree++[identifier: id], tail}
+
+  def type(tree, [{:keyword, type}|tail])
+    when type in ["int","char","boolean"], do: {tree ++ [{:keyword, type}], tail}
+  def type(tree, [{:identifier, class}|tail]) do
+    {tree ++ [{:identifier, class}], tail}
+  end
+
   defp class([{:keyword, "class"},{:identifier, id},{:symbol, "{"}|tail]) do
     children = [
       {:keyword, "class"},
@@ -34,11 +42,9 @@ defmodule Jack.Parser do
   defp sub_dec(tree, [{:keyword, type}|tail]) when(type in ["constructor","function","method"]) do
     children = [{:keyword, type}]
     {children,tail} = type_or_void(children,tail)
-    [{:identifier,fn_name},{:symbol,"("}|tail] = tail
-    children = children ++ [{:identifier,fn_name},{:symbol,"("}]
-    {children, tail} = parameter_list(children, tail)
-    [{:symbol, ")"}|tail] = tail
-    children = children ++ [{:symbol,")"}]
+    [{:identifier,fn_name}|tail] = tail
+    children = children ++ [{:identifier,fn_name}]
+    {children, tail} = Jack.ParamsList.parse(children, tail)
     {children, tail} = sub_body(children, tail)
     subtree = {:subroutineDec, children}
     sub_dec(tree ++ [subtree], tail)
@@ -49,11 +55,6 @@ defmodule Jack.Parser do
     {tree ++ [keyword: "void"], tail}
   end
   defp type_or_void(tree, tail), do: type(tree, tail)
-
-  defp parameter_list(tree, tail) do
-    children = [{:parameterList,[]}]
-    {tree ++ children, tail}
-  end
 
   defp sub_body(tree, [{:symbol,"{"}|tail]) do
     children = [{:symbol,"{"}]
@@ -77,12 +78,6 @@ defmodule Jack.Parser do
     {children, tail} = type(tree,tail)
     [{:identifier, name}|tail] = tail
     var_dec(children ++ [{:identifier, name}], tail)
-  end
-
-  defp type(tree, [{:keyword, type}|tail])
-    when type in ["int","char","boolean"], do: {tree ++ [{:keyword, type}], tail}
-  defp type(tree, [{:identifier, class}|tail]) do
-    {tree ++ [{:identifier, class}], tail}
   end
 
   defp statements(tree, tail) do
