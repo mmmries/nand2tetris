@@ -31,25 +31,24 @@ defmodule Jack.Parser do
     {tree ++ [{:identifier,name},{:symbol,";"}], tail}
   end
 
-  defp sub_dec(tree, [
-    {:keyword, "function"},
-    {:keyword,"void"},
-    {:identifier, fn_name},
-    {:symbol, "("}|tail]) do
-      children = [
-        {:keyword, "function"},
-        {:keyword, "void"},
-        {:identifier, fn_name},
-        {:symbol, "("},
-      ]
-      {children, tail} = parameter_list(children, tail)
-      [{:symbol, ")"}|tail] = tail
-      children = children ++ [{:symbol,")"}]
-      {children, tail} = sub_body(children, tail)
-      subtree = {:subroutineDec, children}
-      {tree ++ [subtree], tail}
+  defp sub_dec(tree, [{:keyword, type}|tail]) when(type in ["constructor","function","method"]) do
+    children = [{:keyword, type}]
+    {children,tail} = type_or_void(children,tail)
+    [{:identifier,fn_name},{:symbol,"("}|tail] = tail
+    children = children ++ [{:identifier,fn_name},{:symbol,"("}]
+    {children, tail} = parameter_list(children, tail)
+    [{:symbol, ")"}|tail] = tail
+    children = children ++ [{:symbol,")"}]
+    {children, tail} = sub_body(children, tail)
+    subtree = {:subroutineDec, children}
+    sub_dec(tree ++ [subtree], tail)
   end
   defp sub_dec(tree, tail), do: {tree, tail}
+
+  defp type_or_void(tree, [{:keyword,"void"}|tail]) do
+    {tree ++ [keyword: "void"], tail}
+  end
+  defp type_or_void(tree, tail), do: type(tree, tail)
 
   defp parameter_list(tree, tail) do
     children = [{:parameterList,[]}]
@@ -115,6 +114,13 @@ defmodule Jack.Parser do
     subtree = [{:returnStatement, children}]
     {tree ++ subtree, tail}
   end
+  defp statement(tree, [{:keyword,"return"}|tail]) do
+    {children, tail} = expression([keyword: "return"], tail)
+    [{:symbol,";"}|tail] = tail
+    children = children ++ [symbol: ";"]
+    subtree = [returnStatement: children]
+    {tree ++ subtree, tail}
+  end
   defp statement(tree,tail), do: {tree, tail}
 
   defp expression(tree,tail) do
@@ -125,6 +131,10 @@ defmodule Jack.Parser do
 
   defp term(tree,[{:identifier,id}|tail]) do
     subtree = [{:term, [{:identifier, id}]}]
+    {tree ++ subtree, tail}
+  end
+  defp term(tree,[{:integerConstant,num}|tail]) do
+    subtree = [term: [integerConstant: num]]
     {tree ++ subtree, tail}
   end
 

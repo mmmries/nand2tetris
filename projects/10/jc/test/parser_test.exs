@@ -139,4 +139,82 @@ defmodule ParserTest do
 
     assert jack |> tokenize |> parse == expected
   end
+
+  test "understands different types of subroutines" do
+    jack = """
+    class Jack {
+      constructor Jack new(){return;}
+      function void quack(){return;}
+      method int bark(){ return 5; }
+    }
+    """
+
+    expected = {:class, [
+      keyword: "class",
+      identifier: "Jack",
+      symbol: "{",
+      subroutineDec: [
+        keyword: "constructor",
+        identifier: "Jack",
+        identifier: "new",
+        symbol: "(",
+        parameterList: [],
+        symbol: ")",
+        subroutineBody: [
+          symbol: "{",
+          statements: [
+            returnStatement: [
+              keyword: "return",
+              symbol: ";",
+            ]
+          ],
+          symbol: "}",
+        ]
+      ],
+      subroutineDec: [
+        keyword: "function",
+        keyword: "void",
+        identifier: "quack",
+        symbol: "(",
+        parameterList: [],
+        symbol: ")",
+        subroutineBody: [
+          symbol: "{",
+          statements: [
+            returnStatement: [
+              keyword: "return",
+              symbol: ";",
+            ]
+          ],
+          symbol: "}",
+        ]
+      ],
+      subroutineDec: [
+        keyword: "method",
+        keyword: "int",
+        identifier: "bark",
+        symbol: "(",
+        parameterList: [],
+        symbol: ")",
+        subroutineBody: [
+          symbol: "{",
+          statements: [
+            returnStatement: [
+              keyword: "return",
+              expression: [
+                term: [
+                  integerConstant: "5"
+                ]
+              ],
+              symbol: ";",
+            ]
+          ],
+          symbol: "}",
+        ]
+      ],
+      symbol: "}",
+    ]}
+
+    assert jack |> tokenize |> parse == expected
+  end
 end
