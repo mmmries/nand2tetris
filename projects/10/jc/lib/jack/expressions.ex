@@ -33,6 +33,10 @@ defmodule Jack.Expressions do
     subtree = [term: children]
     {tree ++ subtree, tail}
   end
+  defp term(tree,[{:keyword,k}|tail]) when (k in ["true","false","null","this"]) do
+    subtree = [term: [keyword: k]]
+    {tree ++ subtree, tail}
+  end
   defp term(tree,[{:identifier,id}|tail]) do
     subtree = [{:term, [{:identifier, id}]}]
     {tree ++ subtree, tail}

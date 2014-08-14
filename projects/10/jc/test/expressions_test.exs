@@ -58,6 +58,13 @@ defmodule Jack.ExpressionsTest do
     assert expression([], tokens) == {expected, []}
   end
 
+  test "a simple keyword expression" do
+    jack = "true"
+    expected = [expression: [term: [keyword: "true"]]]
+    tokens = tokenize(jack)
+    assert expression([], tokens) == {expected, []}
+  end
+
   test "a subroutine call expression" do
     jack = "go()"
     expected = [expression: [term: [
