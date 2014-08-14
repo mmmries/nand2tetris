@@ -12,8 +12,11 @@ defmodule Jack.Statements do
   end
   defp parse_item(tree, tail), do: {tree, tail}
 
-  def statement(tree, [{:keyword,"let"},{:identifier,name},{:symbol,"="}|tail]) do
-    children = [{:keyword,"let"},{:identifier,name},{:symbol,"="}]
+  def statement(tree, [{:keyword,"let"},{:identifier,name}|tail]) do
+    children = [{:keyword,"let"},{:identifier,name}]
+    {children, tail} = array_access_or_nil(children,tail)
+    [{:symbol, "="}|tail] = tail
+    children = children ++ [symbol: "="]
     {children, tail} = Jack.Expressions.expression(children, tail)
     [{:symbol,";"}|tail] = tail
     children = children ++ [{:symbol,";"}]
@@ -74,4 +77,12 @@ defmodule Jack.Statements do
     {children, tail} = Jack.Expressions.parse([identifier: m],tail)
     {tree ++ children, tail}
   end
+
+  defp array_access_or_nil(tree, [{:symbol,"["}|tail]) do
+    {children, tail} = Jack.Expressions.expression([symbol: "["],tail)
+    [{:symbol, "]"}|tail] = tail
+    children = children ++ [symbol: "]"]
+    {tree ++ children, tail}
+  end
+  defp array_access_or_nil(tree, tail), do: {tree, tail}
 end

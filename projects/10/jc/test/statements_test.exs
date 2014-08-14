@@ -108,6 +108,22 @@ defmodule Jack.StatementsTest do
     assert parse([],tokens) == {expected, []}
   end
 
+  test "array assignment" do
+    jack = "let x[1] = y;"
+    expected = [statements: [
+                letStatement: [
+                  keyword: "let",
+                  identifier: "x",
+                  symbol: "[",
+                  expression: [term: [integerConstant: "1"]],
+                  symbol: "]",
+                  symbol: "=",
+                  expression: [term: [identifier: "y"]],
+                  symbol: ";"]]]
+    tokens = tokenize(jack)
+    assert parse([],tokens) == {expected, []}
+  end
+
   test "multiple statements" do
     jack = "let x = y; do jack.play();"
     expected = [
