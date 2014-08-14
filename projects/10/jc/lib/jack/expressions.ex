@@ -22,8 +22,15 @@ defmodule Jack.Expressions do
     list_item(tree, tail)
   end
 
+  defp term(tree,[{:symbol,"("}|tail]) do
+    {children,tail} = expression([symbol: "("],tail)
+    [{:symbol,")"}|tail] = tail
+    children = children ++ [symbol: ")"]
+    subtree = [term: children]
+    {tree ++ subtree, tail}
+  end
   defp term(tree,[{:identifier,id},{:symbol,"("}|tail]) do
-    {children,tail} = Jack.Expressions.parse([identifier: id],[{:symbol,"("}|tail])
+    {children,tail} = Jack.Expressions.parse([identifier: id], [{:symbol,"("}|tail])
     subtree = [term: children]
     {tree ++ subtree, tail}
   end
@@ -49,9 +56,14 @@ defmodule Jack.Expressions do
   defp terms_and_operators(tree,[{:symbol,op}|tail]) when (op in ["+","-","*","/","&","|","<",">","="]) do
     terms_and_operators(tree ++ [symbol: op], tail)
   end
+  defp terms_and_operators(tree,[{:symbol,op}|tail]) when (op in ["(","-","~"]) do
+    tail = [{:symbol, op}|tail]
+    {tree,tail} = term(tree,tail)
+    terms_and_operators(tree,tail)
+  end
   defp terms_and_operators(tree,[{type,val}|tail]) when(type in [:identifier, :keyword, :integerConstant]) do
-    {children,tail} = term([],[{type,val}|tail])
-    terms_and_operators(tree ++ children,tail)
+    {tree,tail} = term(tree,[{type,val}|tail])
+    terms_and_operators(tree,tail)
   end
   defp terms_and_operators(tree,tail), do: {tree,tail}
 end
