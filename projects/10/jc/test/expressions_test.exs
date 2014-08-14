@@ -109,4 +109,14 @@ defmodule Jack.ExpressionsTest do
     tokens = tokenize(jack)
     assert expression([], tokens) == {expected, []}
   end
+
+  test "unary operator" do
+    jack = "~x"
+    expected = [expression: [
+                term: [
+                  symbol: "~",
+                  term: [identifier: "x"]]]]
+    tokens = tokenize(jack)
+    assert expression([], tokens) == {expected, []}
+  end
 end

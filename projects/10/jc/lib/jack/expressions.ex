@@ -29,6 +29,11 @@ defmodule Jack.Expressions do
     subtree = [term: children]
     {tree ++ subtree, tail}
   end
+  defp term(tree,[{:symbol,op}|tail]) when (op in ["-","~"]) do
+    {children, tail} = term([symbol: op], tail)
+    subtree = [term: children]
+    {tree ++ subtree, tail}
+  end
   defp term(tree,[{:identifier,id},{:symbol,"("}|tail]) do
     {children,tail} = Jack.Expressions.parse([identifier: id], [{:symbol,"("}|tail])
     subtree = [term: children]
