@@ -67,16 +67,11 @@ defmodule Jack.Parser do
   end
 
   defp var_decs(tree, [{:keyword,"var"}|tail]) do
-    children = [{:keyword, "var"}]
-    {children, tail} = var_dec(children, tail)
-    var_decs(tree ++ [{:varDec,children}], tail)
+    children = [keyword: "var"]
+    {children,tail} = type(children,tail)
+    {children, tail} = identifier_list(children,tail)
+    subtree = [varDec: children]
+    var_decs(tree ++ subtree, tail)
   end
   defp var_decs(tree,tail), do: {tree, tail}
-
-  defp var_dec(tree, [{:symbol,";"}|tail]), do: {tree ++ [{:symbol,";"}], tail}
-  defp var_dec(tree, tail) do
-    {children, tail} = type(tree,tail)
-    [{:identifier, name}|tail] = tail
-    var_dec(children ++ [{:identifier, name}], tail)
-  end
 end

@@ -217,4 +217,23 @@ defmodule ParserTest do
 
     assert jack |> tokenize |> parse == expected
   end
+
+  test "subroutine variable declarations" do
+    jack = """
+    class Jack {
+      function void main(){
+        var int x,y;
+      }
+    }
+    """
+    expected = {:class,
+      [keyword: "class", identifier: "Jack", symbol: "{",
+       subroutineDec: [keyword: "function", keyword: "void", identifier: "main", symbol: "(", parameterList: [], symbol: ")",
+        subroutineBody: [symbol: "{", varDec: [
+          keyword: "var", keyword: "int", identifier: "x", symbol: ",", identifier: "y", symbol: ";"],
+        statements: [],
+         symbol: "}"]], symbol: "}"]}
+
+    assert jack |> tokenize |> parse == expected
+  end
 end
