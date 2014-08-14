@@ -88,4 +88,15 @@ defmodule Jack.ExpressionsTest do
     tokens = tokenize(jack)
     assert expression([], tokens) == {expected, []}
   end
+
+  test "term operator term" do
+    jack = "15 + x"
+    expected = [expression: [
+                term: [integerConstant: "15"],
+                symbol: "+",
+                term: [identifier: "x"]]]
+    tokens = tokenize(jack)
+    assert expression([], tokens) == {expected, []}
+    
+  end
 end

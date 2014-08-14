@@ -6,7 +6,7 @@ defmodule Jack.Expressions do
   end
 
   def expression(tree,tail) do
-    {children, tail} = term([], tail)
+    {children, tail} = terms_and_operators([], tail)
     subtree = [{:expression, children}]
     {tree ++ subtree, tail}
   end
@@ -45,4 +45,13 @@ defmodule Jack.Expressions do
     subtree = [term: [integerConstant: num]]
     {tree ++ subtree, tail}
   end
+
+  defp terms_and_operators(tree,[{:symbol,op}|tail]) when (op in ["+","-","*","/","&","|","<",">","="]) do
+    terms_and_operators(tree ++ [symbol: op], tail)
+  end
+  defp terms_and_operators(tree,[{type,val}|tail]) when(type in [:identifier, :keyword, :integerConstant]) do
+    {children,tail} = term([],[{type,val}|tail])
+    terms_and_operators(tree ++ children,tail)
+  end
+  defp terms_and_operators(tree,tail), do: {tree,tail}
 end
