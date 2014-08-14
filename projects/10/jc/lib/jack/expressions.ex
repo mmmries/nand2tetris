@@ -22,6 +22,17 @@ defmodule Jack.Expressions do
     list_item(tree, tail)
   end
 
+  defp term(tree,[{:identifier,id},{:symbol,"("}|tail]) do
+    {children,tail} = Jack.Expressions.parse([identifier: id],[{:symbol,"("}|tail])
+    subtree = [term: children]
+    {tree ++ subtree, tail}
+  end
+  defp term(tree,[{:identifier,receiver},{:symbol,"."},{:identifier,m}|tail]) do
+    children = [identifier: receiver, symbol: ".", identifier: m]
+    {children,tail} = Jack.Expressions.parse(children,tail)
+    subtree = [term: children]
+    {tree ++ subtree, tail}
+  end
   defp term(tree,[{:identifier,id}|tail]) do
     subtree = [{:term, [{:identifier, id}]}]
     {tree ++ subtree, tail}

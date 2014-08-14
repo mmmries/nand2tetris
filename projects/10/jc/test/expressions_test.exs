@@ -43,4 +43,42 @@ defmodule Jack.ExpressionsTest do
     tokens = tokenize(jack)
     assert parse([], tokens) == {expected, []}
   end
+
+  test "a simple term/integerConstant expression" do
+    jack = "518"
+    expected = [expression: [term: [integerConstant: "518"]]]
+    tokens = tokenize(jack)
+    assert expression([], tokens) == {expected, []}
+  end
+
+  test "a simple term/identifier expression" do
+    jack = "runner"
+    expected = [expression: [term: [identifier: "runner"]]]
+    tokens = tokenize(jack)
+    assert expression([], tokens) == {expected, []}
+  end
+
+  test "a subroutine call expression" do
+    jack = "go()"
+    expected = [expression: [term: [
+      identifier: "go",
+      symbol: "(",
+      expressionList: [],
+      symbol: ")"]]]
+    tokens = tokenize(jack)
+    assert expression([], tokens) == {expected, []}
+  end
+
+  test "a subroutine call with explicit receive" do
+    jack = "Game.go()"
+    expected = [expression: [term: [
+      identifier: "Game",
+      symbol: ".",
+      identifier: "go",
+      symbol: "(",
+      expressionList: [],
+      symbol: ")"]]]
+    tokens = tokenize(jack)
+    assert expression([], tokens) == {expected, []}
+  end
 end
