@@ -57,3 +57,11 @@ canonical_files.each do |canonical_file|
   tmp = parse(jack_file)
   compare_files(tmp.path, canonical_file)
 end
+
+#ArrayTest Parser Tests
+canonical_files = Dir[ROOT+"ArrayTest/*.xml"].reject{|p| p.include?("T.xml")}
+canonical_files.each do |canonical_file|
+  jack_file = canonical_file[0..-4]+"jack"
+  tmp = parse(jack_file)
+  compare_files(tmp.path, canonical_file)
+end
