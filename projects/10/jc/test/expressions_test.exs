@@ -119,4 +119,16 @@ defmodule Jack.ExpressionsTest do
     tokens = tokenize(jack)
     assert expression([], tokens) == {expected, []}
   end
+
+  test "array access term" do
+    jack = "x[15]"
+    expected = [expression: [
+                term: [
+                  identifier: "x",
+                  symbol: "[",
+                  expression: [term: [integerConstant: "15"]],
+                  symbol: "]"]]]
+    tokens = tokenize(jack)
+    assert expression([], tokens) == {expected, []}
+  end
 end
