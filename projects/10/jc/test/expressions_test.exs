@@ -65,6 +65,13 @@ defmodule Jack.ExpressionsTest do
     assert expression([], tokens) == {expected, []}
   end
 
+  test "a simple string constant expression" do
+    jack = "\"OHAI\""
+    expected = [expression: [term: [stringConstant: "OHAI"]]]
+    tokens = tokenize(jack)
+    assert expression([], tokens) == {expected, []}
+  end
+
   test "a simple (keyword) expression" do
     jack = "(true)"
     expected = [expression: [
