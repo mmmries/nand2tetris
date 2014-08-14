@@ -19,7 +19,7 @@ defmodule Jack.Parser do
     ]
     {children, tail} = class_var_dec(children, tail)
     {children, tail} = sub_dec(children, tail)
-    [{:symbol, "}"}|_tail] = tail
+    [{:symbol, "}"}|[]] = tail
     children = children ++ [{:symbol,"}"}]
     {:class, children}
   end
