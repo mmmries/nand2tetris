@@ -17,10 +17,10 @@ defmodule Mix.Tasks.Parse do
     tokens |> Enum.map(&token_to_xml/1) |> Enum.join("")
   end
 
-  defp token_to_xml({type, list}) when is_list(list) do
+  def token_to_xml({type, list}) when is_list(list) do
     "<#{type}>\n" <> to_xml(list) <> "</#{type}>\n"
   end
-  defp token_to_xml({type, value}) do
+  def token_to_xml({type, value}) do
     "<#{type}>"<>escape(value)<>"</#{type}>\n"
   end
 
