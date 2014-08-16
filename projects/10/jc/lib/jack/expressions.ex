@@ -1,7 +1,10 @@
 defmodule Jack.Expressions do
+  import Jack.Parser, only: [sym: 3]
+
   def parse(tree, [{:symbol,"("}|tail]) do
     {children, tail} = list_item([], tail)
-    subtree = [symbol: "(", expressionList: children, symbol: ")"]
+    subtree = [symbol: "(", expressionList: children]
+    {subtree, tail} = sym(")", subtree, tail)
     {tree ++ subtree, tail}
   end
 
@@ -11,7 +14,7 @@ defmodule Jack.Expressions do
     {tree ++ subtree, tail}
   end
 
-  defp list_item(tree,[{:symbol,")"}|tail]), do: {tree, tail}
+  defp list_item(tree,[{:symbol,")"}|_]=tail), do: {tree, tail}
   defp list_item(tree,[{:symbol,","}|tail]) do
     tree = tree ++ [symbol: ","]
     {tree, tail} = expression(tree, tail)
@@ -72,8 +75,7 @@ defmodule Jack.Expressions do
   defp terms_and_operators(tree,[{:symbol,op}|tail]) when (op in ["+","-","*","/","&","|","<",">","="]) do
     terms_and_operators(tree ++ [symbol: op], tail)
   end
-  defp terms_and_operators(tree,[{:symbol,op}|tail]) when (op in ["(","-","~"]) do
-    tail = [{:symbol, op}|tail]
+  defp terms_and_operators(tree,[{:symbol,op}|_]=tail) when (op in ["(","-","~"]) do
     {tree,tail} = term(tree,tail)
     terms_and_operators(tree,tail)
   end

@@ -5,6 +5,8 @@ defmodule Jack.Parser do
 
   def identifier(tree,[{:identifier,id}|tail]), do: {tree++[identifier: id], tail}
 
+  def sym(symbol, tree, [{:symbol, symbol}|tail]), do: {tree++[symbol: symbol],tail}
+
   def type(tree, [{:keyword, type}|tail])
     when type in ["int","char","boolean"], do: {tree ++ [{:keyword, type}], tail}
   def type(tree, [{:identifier, class}|tail]) do
@@ -19,8 +21,7 @@ defmodule Jack.Parser do
     ]
     {children, tail} = class_var_dec(children, tail)
     {children, tail} = sub_dec(children, tail)
-    [{:symbol, "}"}|[]] = tail
-    children = children ++ [{:symbol,"}"}]
+    {children, tail} = sym("}", children, tail)
     {:class, children}
   end
 
@@ -42,8 +43,7 @@ defmodule Jack.Parser do
   defp sub_dec(tree, [{:keyword,type}|tail]) when (type in ["constructor","function","method"]) do
     children = [{:keyword, type}]
     {children,tail} = type_or_void(children,tail)
-    [{:identifier,fn_name}|tail] = tail
-    children = children ++ [{:identifier,fn_name}]
+    {children, tail} = identifier(children, tail)
     {children, tail} = Jack.ParamsList.parse(children, tail)
     {children, tail} = sub_body(children, tail)
     subtree = {:subroutineDec, children}
@@ -57,18 +57,15 @@ defmodule Jack.Parser do
   defp type_or_void(tree, tail), do: type(tree, tail)
 
   defp sub_body(tree, [{:symbol,"{"}|tail]) do
-    children = [{:symbol,"{"}]
-    {children, tail} = var_decs(children, tail)
+    {children, tail} = var_decs([symbol: "{"], tail)
     {children, tail} = Jack.Statements.parse(children, tail)
-    [{:symbol,"}"}|tail] = tail
-    children = children ++ [{:symbol,"}"}]
+    {children, tail} = sym("}", children, tail)
     subtree = {:subroutineBody, children}
     {tree ++ [subtree], tail}
   end
 
   defp var_decs(tree, [{:keyword,"var"}|tail]) do
-    children = [keyword: "var"]
-    {children,tail} = type(children,tail)
+    {children,tail} = type([keyword: "var"],tail)
     {children, tail} = identifier_list(children,tail)
     subtree = [varDec: children]
     var_decs(tree ++ subtree, tail)
