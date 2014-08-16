@@ -25,6 +25,6 @@ defmodule JackCompiler.Mixfile do
   #
   # Type `mix help deps` for more examples and options
   defp deps do
-    []
+    [benchwarmer: "~> 0.0.1"]
   end
 end
