@@ -1,0 +1,2 @@
+%{"benchwarmer": {:package, "0.0.1"},
+  "xml_builder": {:package, "0.0.5"}}
