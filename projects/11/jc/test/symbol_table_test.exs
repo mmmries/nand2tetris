@@ -8,6 +8,7 @@ defmodule SymbolTableTest do
     jack = """
       class Simple {
         field int x, y;
+        static int debug;
       }
     """
 
@@ -32,6 +33,16 @@ defmodule SymbolTableTest do
           :category => "field",
           :index => 2,
           :definition => true},
+        symbol: ";"
+      ],
+      classVarDec: [
+        keyword: "static",
+        keyword: "int",
+        identifier: %{
+          :name => "debug",
+          :category => "static",
+          :index => 1,
+          :definition => true },
         symbol: ";"
       ],
       symbol: "}"

@@ -1,12 +1,13 @@
 defmodule Jack.SymbolTable do
   def generate({:class, ast}) do
-    {ast, symbols} = replace(ast, %{})
+    {ast, symbols} = replace(ast, %{"class" => nil, "field" => [], "static" => []})
     {:class, ast}
   end
 
   defp replace([{:keyword, "class"},{:identifier, id}|rest], symbols) do
     id_map = %{:name => id, :category => "class", :definition => true}
     list = [keyword: "class", identifier: id_map]
+    symbols = Dict.put(symbols, :class, id)
     {rest, symbols} = replace(rest, symbols)
     {list ++ rest, symbols}
   end
@@ -29,9 +30,10 @@ defmodule Jack.SymbolTable do
     {tail, syms} = cvd(tail, syms, temp)
     {[{:keyword, kw}|tail],syms}
   end
-  defp cvd([{:identifier,id}|tail], syms, temp) do
-    id_map = %{ :category => Dict.get(temp, :category), :name => id, :definition => true, :index => Dict.size(syms) + 1 }
-    syms = Dict.put(syms, id, id_map)
+  defp cvd([{:identifier,id}|tail], syms, %{:category => c}=temp) do
+    idx = (syms |> Dict.get(c) |> Enum.count) + 1
+    id_map = %{ :category => c, :name => id, :definition => true, :index => idx }
+    syms = Dict.update!(syms, c, &([id_map|&1]))
     {tail, syms} = cvd(tail, syms, temp)
     {[{:identifier, id_map}|tail], syms}
   end
