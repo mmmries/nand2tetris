@@ -1,13 +1,13 @@
 defmodule Jack.SymbolTable do
   def generate({:class, ast}) do
-    {ast, _symbols} = replace(ast, %{"class" => nil, "field" => [], "static" => [], "argument" => [], "var" => []})
+    {ast, _symbols} = replace(ast, %{"class" => nil, "field" => %{}, "static" => %{}, "argument" => %{}, "var" => %{}})
     {:class, ast}
   end
 
   defp replace([{:keyword, "class"},{:identifier, id}|rest], symbols) do
     id_map = %{:name => id, :category => "class", :definition => true}
     list = [keyword: "class", identifier: id_map]
-    symbols = Dict.put(symbols, :class, id)
+    symbols = Dict.put(symbols, "class", id)
     {rest, symbols} = replace(rest, symbols)
     {list ++ rest, symbols}
   end
@@ -17,7 +17,7 @@ defmodule Jack.SymbolTable do
     {[{:classVarDec,dec}|rest],syms}
   end
   defp replace([{:subroutineDec,dec}|rest], syms) do
-    {dec, syms} = sub(dec,syms)
+    {dec, _sub_syms} = sub(dec,syms)
     {rest,syms} = replace(rest, syms)
     {[{:subroutineDec,dec}|rest],syms}
   end
@@ -31,14 +31,14 @@ defmodule Jack.SymbolTable do
 
   defp cvd([], syms, _temp), do: {[], syms}
   defp cvd([{:keyword, kw},type|tail], syms, temp) when (kw in ["field","static"]) do
-    temp = Dict.put(temp, :category, kw)
+    temp = Dict.put_new(temp, :category, kw)
     {tail, syms} = cvd(tail, syms, temp)
     {[{:keyword, kw},type|tail],syms}
   end
   defp cvd([{:identifier,id}|tail], syms, %{:category => c}=temp) do
-    idx = (syms |> Dict.get(c) |> Enum.count) + 1
+    idx = (syms |> Dict.get(c) |> Dict.size) + 1
     id_map = %{ :category => c, :name => id, :definition => true, :index => idx }
-    syms = Dict.update!(syms, c, &([id_map|&1]))
+    syms = Dict.update!(syms, c, &(Dict.put_new(&1,id,id_map)))
     {tail, syms} = cvd(tail, syms, temp)
     {[{:identifier, id_map}|tail], syms}
   end
@@ -74,9 +74,9 @@ defmodule Jack.SymbolTable do
     {[{:keyword,"var"}|tail], syms}
   end
   defp params([type,{:identifier, id}|tail],syms) do
-    idx = (syms |> Dict.get("argument") |> Enum.count) + 1
+    idx = (syms |> Dict.get("argument") |> Dict.size) + 1
     id_map = %{:name => id, :category => "argument", :index => idx, :definition => true}
-    syms = Dict.update!(syms, "argument", &([id_map|&1]))
+    syms = Dict.update!(syms, "argument", &(Dict.put_new(&1,id,id_map)))
     {tail, syms} = params(tail, syms)
     {[type,{:identifier,id_map}|tail], syms}
   end
@@ -102,9 +102,9 @@ defmodule Jack.SymbolTable do
     {[{:keyword, "var"},type|tail],syms}
   end
   defp vd([{:identifier,id}|tail], syms) do
-    idx = (syms |> Dict.get("var") |> Enum.count) + 1
+    idx = (syms |> Dict.get("var") |> Dict.size) + 1
     id_map = %{ :category => "var", :name => id, :definition => true, :index => idx }
-    syms = Dict.update!(syms, "var", &([id_map|&1]))
+    syms = Dict.update!(syms, "var", &(Dict.put_new(&1,id,id_map)))
     {tail, syms} = vd(tail, syms)
     {[{:identifier, id_map}|tail], syms}
   end
