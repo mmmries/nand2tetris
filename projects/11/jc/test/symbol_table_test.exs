@@ -206,7 +206,7 @@ defmodule SymbolTableTest do
 
   def first_by_type(ast, type) do
     selector = fn (t) -> fn ({type,_val}) -> type == t end end
-    {type, sub} = ast |> Enum.filter(selector.(type)) |> List.first
+    {_type, sub} = ast |> Enum.filter(selector.(type)) |> List.first
     sub
   end
 end
