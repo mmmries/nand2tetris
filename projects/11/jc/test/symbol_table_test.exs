@@ -205,22 +205,32 @@ defmodule SymbolTableTest do
   test "can call functions with explicit receiver" do
     jack = """
       class Simple{
-        function void main(){
+        function void main(String x){
           do Memory.deAlloc(this);
+          do x.challenge();
         }
       }
     """
 
     {:class, ast} = jack |> tokenize |> parse |> generate
-    ids = first_by_type(ast, :subroutineDec) |>
+    statements = first_by_type(ast, :subroutineDec) |>
       first_by_type(:subroutineBody) |>
-      first_by_type(:statements) |>
+      first_by_type(:statements)
+    ids = statements |>
       first_by_type(:doStatement) |>
       by_type(:identifier)
     {:identifier, receiver} = ids |> List.first
     {:identifier, meth} = ids |> List.last
     assert receiver == %{:name => "Memory", :category => "class", :definition => false}
     assert meth == %{:name => "deAlloc", :category => "subroutine", :definition => false}
+
+    ids = statements |>
+      last_by_type(:doStatement) |>
+      by_type(:identifier)
+    {:identifier, receiver} = ids |> List.first
+    {:identifier, meth} = ids |> List.last
+    assert receiver == %{:name => "x", :category => "argument", :index => 1, :definition => false, }
+    assert meth == %{:name => "challenge", :category => "subroutine", :definition => false}
   end
 
   def by_type(ast, type) do
@@ -230,6 +240,11 @@ defmodule SymbolTableTest do
 
   def first_by_type(ast, type) do
     {_type, sub} = by_type(ast, type) |> List.first
+    sub
+  end
+
+  def last_by_type(ast, type) do
+    {_type, sub} = by_type(ast, type) |> List.last
     sub
   end
 end

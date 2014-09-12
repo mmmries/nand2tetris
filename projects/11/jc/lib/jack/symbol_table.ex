@@ -128,7 +128,7 @@ defmodule Jack.SymbolTable do
   end
   defp statements([{:identifier,receiver},{:symbol,"."},{:identifier,method},{:symbol,"("}|tail], syms) do
     method_map = %{:name => method, :category => "subroutine", :definition => false}
-    receiver_map = %{:name => receiver, :category => "class", :definition => false}
+    receiver_map = resolve_or_class(receiver,syms)
     {tail, syms} = statements(tail, syms)
     {[{:identifier, receiver_map},{:symbol,"."},{:identifier, method_map},{:symbol,"("}|tail],syms}
   end
@@ -159,5 +159,12 @@ defmodule Jack.SymbolTable do
       Enum.map( &(Dict.get(&1,identifier)) ) |>
       Enum.reject( &(&1 == nil) ) |>
       List.first
+  end
+
+  defp resolve_or_class(identifier, syms) do
+    case resolve(identifier,syms) do
+      nil -> %{:name => identifier, :category => "class", :definition => false}
+      id_map -> %{id_map | definition: false}
+    end
   end
 end
