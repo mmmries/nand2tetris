@@ -184,14 +184,12 @@ defmodule SymbolTableTest do
     end
   end
 
-  test "can call functions not defined yet" do
+  test "can call functions with implicit receiver" do
     jack = """
       class Simple{
         function void main(){
           do draw();
         }
-
-        method void draw(){}
       }
     """
 
@@ -204,9 +202,34 @@ defmodule SymbolTableTest do
     assert id == %{:name => "draw", :category => "subroutine", :definition => false}
   end
 
-  def first_by_type(ast, type) do
+  test "can call functions with explicit receiver" do
+    jack = """
+      class Simple{
+        function void main(){
+          do Memory.deAlloc(this);
+        }
+      }
+    """
+
+    {:class, ast} = jack |> tokenize |> parse |> generate
+    ids = first_by_type(ast, :subroutineDec) |>
+      first_by_type(:subroutineBody) |>
+      first_by_type(:statements) |>
+      first_by_type(:doStatement) |>
+      by_type(:identifier)
+    {:identifier, receiver} = ids |> List.first
+    {:identifier, meth} = ids |> List.last
+    assert receiver == %{:name => "Memory", :category => "class", :definition => false}
+    assert meth == %{:name => "deAlloc", :category => "subroutine", :definition => false}
+  end
+
+  def by_type(ast, type) do
     selector = fn (t) -> fn ({type,_val}) -> type == t end end
-    {_type, sub} = ast |> Enum.filter(selector.(type)) |> List.first
+    ast |> Enum.filter(selector.(type))
+  end
+
+  def first_by_type(ast, type) do
+    {_type, sub} = by_type(ast, type) |> List.first
     sub
   end
 end
