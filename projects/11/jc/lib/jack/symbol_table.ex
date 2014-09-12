@@ -126,8 +126,13 @@ defmodule Jack.SymbolTable do
     {tail,syms} = statements(tail, syms)
     {[{type,list}|tail], syms}
   end
+  defp statements([{:identifier,id},{:symbol,"("}|tail], syms) do
+    id_map = %{:name => id, :category => "subroutine", :definition => false}
+    {tail, syms} = statements(tail, syms)
+    {[{:identifier, id_map},{:symbol,"("}|tail],syms}
+  end
   defp statements([{:identifier, id}|tail], syms) do
-    id_map = resolve(id, syms)
+    id_map = resolve!(id, syms)
     id_map = %{id_map| definition: false}
     {tail, syms} = statements(tail, syms)
     {[{:identifier,id_map}|tail], syms}
@@ -137,14 +142,16 @@ defmodule Jack.SymbolTable do
     {[head|tail],syms}
   end
 
-  defp resolve(identifier, %{"var" => vars, "argument" => arguments, "field" => fields, "static" => statics} = syms) do
-    id_map = [vars, arguments, fields, statics] |>
-             Enum.map( &(Dict.get(&1,identifier)) ) |>
-             Enum.reject( &(&1 == nil) ) |>
-             List.first
-    unless id_map do
-      raise ArgumentError, "could not resolve #{identifier}"
+  defp resolve!(identifier, syms) do
+    case resolve(identifier, syms) do
+      nil -> raise ArgumentError, "could not resolve #{identifier}"
+      val -> val
     end
-    id_map
+  end
+  defp resolve(identifier, %{"var" => vars, "argument" => arguments, "field" => fields, "static" => statics}) do
+    [vars, arguments, fields, statics] |>
+      Enum.map( &(Dict.get(&1,identifier)) ) |>
+      Enum.reject( &(&1 == nil) ) |>
+      List.first
   end
 end

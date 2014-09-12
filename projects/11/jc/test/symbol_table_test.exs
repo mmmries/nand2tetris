@@ -183,4 +183,30 @@ defmodule SymbolTableTest do
       jack |> tokenize |> parse |> generate
     end
   end
+
+  test "can call functions not defined yet" do
+    jack = """
+      class Simple{
+        function void main(){
+          do draw();
+        }
+
+        method void draw(){}
+      }
+    """
+
+    {:class, ast} = jack |> tokenize |> parse |> generate
+    id = first_by_type(ast, :subroutineDec) |>
+      first_by_type(:subroutineBody) |>
+      first_by_type(:statements) |>
+      first_by_type(:doStatement) |>
+      first_by_type(:identifier)
+    assert id == %{:name => "draw", :category => "subroutine", :definition => false}
+  end
+
+  def first_by_type(ast, type) do
+    selector = fn (t) -> fn ({type,_val}) -> type == t end end
+    {type, sub} = ast |> Enum.filter(selector.(type)) |> List.first
+    sub
+  end
 end
