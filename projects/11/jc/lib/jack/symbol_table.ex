@@ -1,5 +1,5 @@
 defmodule Jack.SymbolTable do
-  def generate(ast) do
+  def resolve(ast) do
     {ast, _symbols} = replace(ast, %{"class" => nil, "field" => %{}, "static" => %{}, "argument" => %{}, "var" => %{}})
     ast
   end

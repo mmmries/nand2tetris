@@ -1,13 +1,13 @@
 defmodule Jack.Compiler do
   import Jack.Tokenizer, only: [tokenize: 1]
   import Jack.Parser, only: [parse: 1]
-  import Jack.SymbolTable, only: [generate: 1]
+  import Jack.SymbolTable, only: [resolve: 1]
 
   def compile(class_string) do
     class_string |>
       tokenize |>
       parse |>
-      generate |>
+      resolve |>
       ast_to_instructions |>
       Enum.join("\n")
   end

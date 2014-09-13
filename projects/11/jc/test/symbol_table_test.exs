@@ -2,7 +2,7 @@ defmodule SymbolTableTest do
   use ExUnit.Case
   import Jack.Tokenizer, only: [tokenize: 1]
   import Jack.Parser, only: [parse: 1]
-  import Jack.SymbolTable, only: [generate: 1]
+  import Jack.SymbolTable, only: [resolve: 1]
 
   test "class fields and statics" do
     jack = """
@@ -48,7 +48,7 @@ defmodule SymbolTableTest do
       symbol: "}"
     ]
 
-    assert jack |> tokenize |> parse |> generate == expected
+    assert jack |> tokenize |> parse |> resolve == expected
   end
 
   test "argument and var declarations" do
@@ -97,7 +97,7 @@ defmodule SymbolTableTest do
       symbol: "}"
     ]
 
-    assert jack |> tokenize |> parse |> generate == expected
+    assert jack |> tokenize |> parse |> resolve == expected
   end
 
   test "usage of fields, arguments and locals" do
@@ -167,7 +167,7 @@ defmodule SymbolTableTest do
       symbol: "}"
     ]
 
-    assert jack |> tokenize |> parse |> generate == expected
+    assert jack |> tokenize |> parse |> resolve == expected
   end
 
   test "it fails on undefined identifiers" do
@@ -180,7 +180,7 @@ defmodule SymbolTableTest do
     """
 
     assert_raise ArgumentError, fn ->
-      jack |> tokenize |> parse |> generate
+      jack |> tokenize |> parse |> resolve
     end
   end
 
@@ -193,7 +193,7 @@ defmodule SymbolTableTest do
       }
     """
 
-    ast = jack |> tokenize |> parse |> generate
+    ast = jack |> tokenize |> parse |> resolve
     id = first_by_type(ast, :subroutineDec) |>
       first_by_type(:subroutineBody) |>
       first_by_type(:statements) |>
@@ -212,7 +212,7 @@ defmodule SymbolTableTest do
       }
     """
 
-    ast = jack |> tokenize |> parse |> generate
+    ast = jack |> tokenize |> parse |> resolve
     statements = first_by_type(ast, :subroutineDec) |>
       first_by_type(:subroutineBody) |>
       first_by_type(:statements)
