@@ -8,8 +8,7 @@ defmodule Jack.Compiler do
       tokenize |>
       parse |>
       resolve |>
-      a2i([]) |>
-      Enum.join("\n")
+      a2i([])
   end
 
   # AST to Instructions
@@ -17,6 +16,11 @@ defmodule Jack.Compiler do
   defp a2i([{:identifier,%{name: name, category: "subroutine", definition: true}}|tail], path) do
     instructions = a2i(tail,path)
     ["function Main.#{name} 0"|instructions]
+  end
+  defp a2i([{:doStatement,statement}|tail], path) do
+    setup_and_call = a2i(statement,[:doStatement,path])
+    rest = a2i(tail,path)
+    [setup_and_call ++ "pop temp 0"|rest]
   end
   defp a2i([{:returnStatement,_val}|tail], path) do
     instructions = a2i(tail,path)

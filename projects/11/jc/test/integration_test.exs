@@ -3,7 +3,7 @@ defmodule IntegrationTest do
   import Jack.Compiler, only: [compile: 1]
 
   def strip_instructions(vm) do
-    vm |> String.split("\n") |> Enum.map(&String.strip/1) |> Enum.join("\n")
+    vm |> String.split("\n") |> Enum.map(&String.strip/1) |> Enum.reject(&( &1 == "" ))
   end
 
   test "Seven" do
