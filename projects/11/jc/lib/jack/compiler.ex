@@ -13,9 +13,9 @@ defmodule Jack.Compiler do
 
   # AST to Instructions
   defp a2i([],_path), do: []
-  defp a2i([{:identifier,%{name: name, category: "subroutine", definition: true}}|tail], path) do
+  defp a2i([{:identifier,%{name: name, class: class, category: "subroutine", definition: true}}|tail], path) do
     instructions = a2i(tail,path)
-    ["function Main.#{name} 0"|instructions]
+    ["function #{class}.#{name} 0"|instructions]
   end
   defp a2i([{:doStatement,statement}|tail], path) do
     setup_and_call = a2i(statement,[:doStatement,path])
