@@ -8,10 +8,9 @@ defmodule Mix.Tasks.Parse do
       Enum.map(&File.read!/1) |>
       Enum.join("\n") |>
       Jack.Tokenizer.tokenize |>
-      Jack.Parser.parse
-    {:class, ast} |>
-      token_to_xml |>
-      IO.write
+      Jack.Parser.parse |>
+      Jack.SymbolTable.resolve
+    IO.puts inspect(ast)
   end
 
   defp to_xml(tokens) do
