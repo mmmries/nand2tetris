@@ -31,4 +31,11 @@ defmodule IntegrationTest do
 
     assert compile(jack) == expected
   end
+
+  test "ConvertToBin" do
+    jack = "test/fixtures/ConvertToBin/Main.jack" |> File.read!
+    expected ="test/fixtures/ConvertToBin/Main.vm" |> File.read! |> strip_instructions
+
+    assert compile(jack)
+  end
 end
