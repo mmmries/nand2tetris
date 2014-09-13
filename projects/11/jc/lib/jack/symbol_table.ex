@@ -1,7 +1,7 @@
 defmodule Jack.SymbolTable do
-  def generate({:class, ast}) do
+  def generate(ast) do
     {ast, _symbols} = replace(ast, %{"class" => nil, "field" => %{}, "static" => %{}, "argument" => %{}, "var" => %{}})
-    {:class, ast}
+    ast
   end
 
   defp replace([{:keyword, "class"},{:identifier, id}|rest], symbols) do

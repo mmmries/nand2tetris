@@ -43,7 +43,7 @@ defmodule ParserTest do
       symbol: "}"
     ]
 
-    parsed = {:class, [
+    parsed = [
       {:keyword, "class"},
       {:identifier, "Main"},
       {:symbol, "{"},
@@ -103,7 +103,7 @@ defmodule ParserTest do
         ]},
       ]},
       {:symbol,"}"},
-    ]}
+    ]
 
     assert parse(tokens) == parsed
   end
@@ -116,7 +116,7 @@ defmodule ParserTest do
     }
     """
 
-    expected = {:class, [
+    expected = [
       {:keyword, "class"},
       {:identifier, "Jack"},
       {:symbol, "{"},
@@ -135,7 +135,7 @@ defmodule ParserTest do
         {:symbol, ";"}
       ]},
       {:symbol, "}"}
-    ]}
+    ]
 
     assert jack |> tokenize |> parse == expected
   end
@@ -149,7 +149,7 @@ defmodule ParserTest do
     }
     """
 
-    expected = {:class, [
+    expected = [
       keyword: "class",
       identifier: "Jack",
       symbol: "{",
@@ -213,7 +213,7 @@ defmodule ParserTest do
         ]
       ],
       symbol: "}",
-    ]}
+    ]
 
     assert jack |> tokenize |> parse == expected
   end
@@ -226,13 +226,12 @@ defmodule ParserTest do
       }
     }
     """
-    expected = {:class,
-      [keyword: "class", identifier: "Jack", symbol: "{",
+    expected = [keyword: "class", identifier: "Jack", symbol: "{",
        subroutineDec: [keyword: "function", keyword: "void", identifier: "main", symbol: "(", parameterList: [], symbol: ")",
         subroutineBody: [symbol: "{", varDec: [
           keyword: "var", keyword: "int", identifier: "x", symbol: ",", identifier: "y", symbol: ";"],
         statements: [],
-         symbol: "}"]], symbol: "}"]}
+         symbol: "}"]], symbol: "}"]
 
     assert jack |> tokenize |> parse == expected
   end

@@ -1,62 +1,30 @@
-defmodule Jack.IntegrationTest do
+defmodule IntegrationTest do
   use ExUnit.Case
-  import Jack.Tokenizer, only: [tokenize: 1]
-  import Jack.Parser, only: [parse: 1]
-  import Mix.Tasks.Parse, only: [token_to_xml: 1]
+  import Jack.Compiler, only: [compile: 1]
 
-  test "tokenize Square/Main" do
-    tokenize_test("test/fixtures/Square/Main")
-  end
+  test "Seven" do
+    jack = """
+      class Main {
+         function void main() {
+             do Output.printInt(1 + (2 * 3));
+             return;
+         }
+      }
+    """
 
-  test "tokenize Square/Square" do
-    tokenize_test("test/fixtures/Square/Square")
-  end
+    expected = """
+      function Main.main 0
+      push constant 1
+      push constant 2
+      push constant 3
+      call Math.multiply 2
+      add
+      call Output.printInt 1
+      pop temp 0
+      push constant 0
+      return
+    """
 
-  test "tokenize Square/SquareGame" do
-    tokenize_test("test/fixtures/Square/SquareGame")
-  end
-
-  test "tokenize ArrayTest/Main" do
-    tokenize_test("test/fixtures/ArrayTest/Main")
-  end
-
-  test "parse Square/Main" do
-    parse_test("test/fixtures/Square/Main")
-  end
-
-  test "parse Square/Square" do
-    parse_test("test/fixtures/Square/Square")
-  end
-
-  test "parse Square/SquareGame" do
-    parse_test("test/fixtures/Square/SquareGame")
-  end
-
-  test "parse ArrayTest/Main" do
-    parse_test("test/fixtures/ArrayTest/Main")
-  end
-
-  def parse_test(path) do
-    parsed_xml = (path<>".jack") |>
-      File.read! |>
-      tokenize |>
-      parse |>
-      token_to_xml |>
-      remove_whitespace
-    expected_xml = (path<>".xml") |> File.read! |> remove_whitespace
-    assert parsed_xml == expected_xml
-  end
-
-  def tokenize_test(path) do
-    tokens = (path<>".jack") |>
-      File.read! |>
-      tokenize
-    generated_xml = {:tokens, tokens} |> token_to_xml |> remove_whitespace
-    expected_xml = (path<>"T.xml") |> File.read! |> remove_whitespace
-    assert generated_xml == expected_xml
-  end
-
-  defp remove_whitespace(str) do
-    String.replace str, ~r/\s/, ""
+    assert compile(jack) == expected
   end
 end

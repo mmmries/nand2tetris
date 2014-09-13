@@ -22,7 +22,7 @@ defmodule Jack.Parser do
     {children, tail} = class_var_dec(children, tail)
     {children, tail} = sub_dec(children, tail)
     {children, tail} = sym("}", children, tail)
-    {:class, children}
+    children
   end
 
   defp class_var_dec(tree, [{:keyword,kw}|tail]) when(kw in ["static","field"]) do

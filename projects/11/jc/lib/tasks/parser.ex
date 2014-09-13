@@ -4,11 +4,12 @@ defmodule Mix.Tasks.Parse do
   @shortdoc "tokenize and parse some jack code"
 
   def run(argv) do
-    argv |>
+    ast = argv |>
       Enum.map(&File.read!/1) |>
       Enum.join("\n") |>
       Jack.Tokenizer.tokenize |>
-      Jack.Parser.parse |>
+      Jack.Parser.parse
+    {:class, ast} |>
       token_to_xml |>
       IO.write
   end

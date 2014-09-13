@@ -12,7 +12,7 @@ defmodule SymbolTableTest do
       }
     """
 
-    expected = {:class, [
+    expected = [
       keyword: "class",
       identifier: %{
         :name =>"Simple",
@@ -46,7 +46,7 @@ defmodule SymbolTableTest do
         symbol: ";"
       ],
       symbol: "}"
-    ]}
+    ]
 
     assert jack |> tokenize |> parse |> generate == expected
   end
@@ -61,7 +61,7 @@ defmodule SymbolTableTest do
       }
     """
 
-    expected = {:class, [
+    expected = [
       keyword: "class",
       identifier: %{ :name => "Simple", :category => "class", :definition => true },
       symbol: "{",
@@ -95,7 +95,7 @@ defmodule SymbolTableTest do
           symbol: "}" ]
       ],
       symbol: "}"
-    ]}
+    ]
 
     assert jack |> tokenize |> parse |> generate == expected
   end
@@ -111,7 +111,7 @@ defmodule SymbolTableTest do
       }
     """
 
-    expected = {:class, [
+    expected = [
       keyword: "class",
       identifier: %{ :name => "Simple", :category => "class", :definition => true },
       symbol: "{",
@@ -165,7 +165,7 @@ defmodule SymbolTableTest do
           symbol: "}" ]
       ],
       symbol: "}"
-    ]}
+    ]
 
     assert jack |> tokenize |> parse |> generate == expected
   end
@@ -193,7 +193,7 @@ defmodule SymbolTableTest do
       }
     """
 
-    {:class, ast} = jack |> tokenize |> parse |> generate
+    ast = jack |> tokenize |> parse |> generate
     id = first_by_type(ast, :subroutineDec) |>
       first_by_type(:subroutineBody) |>
       first_by_type(:statements) |>
@@ -212,7 +212,7 @@ defmodule SymbolTableTest do
       }
     """
 
-    {:class, ast} = jack |> tokenize |> parse |> generate
+    ast = jack |> tokenize |> parse |> generate
     statements = first_by_type(ast, :subroutineDec) |>
       first_by_type(:subroutineBody) |>
       first_by_type(:statements)
