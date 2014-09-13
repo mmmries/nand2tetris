@@ -216,21 +216,15 @@ defmodule SymbolTableTest do
     statements = first_by_type(ast, :subroutineDec) |>
       first_by_type(:subroutineBody) |>
       first_by_type(:statements)
-    ids = statements |>
+    method = statements |>
       first_by_type(:doStatement) |>
-      by_type(:identifier)
-    {:identifier, receiver} = ids |> List.first
-    {:identifier, meth} = ids |> List.last
-    assert receiver == %{:name => "Memory", :category => "class", :definition => false}
-    assert meth == %{:name => "deAlloc", :category => "subroutine", :definition => false}
+      first_by_type(:identifier)
+    assert method == %{:name => "deAlloc", :class => "Memory", :category => "subroutine", :definition => false}
 
-    ids = statements |>
+    method = statements |>
       last_by_type(:doStatement) |>
-      by_type(:identifier)
-    {:identifier, receiver} = ids |> List.first
-    {:identifier, meth} = ids |> List.last
-    assert receiver == %{:name => "x", :category => "argument", :index => 1, :definition => false, }
-    assert meth == %{:name => "challenge", :category => "subroutine", :definition => false}
+      first_by_type(:identifier)
+    assert method == %{:name => "challenge", :class => "x", :category => "subroutine", :definition => false}
   end
 
   def by_type(ast, type) do
