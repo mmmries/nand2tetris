@@ -40,11 +40,12 @@ defmodule Jack.Statements do
   end
   def statement(tree, [{:keyword,"if"}|tail]) do
     {children, tail} = sym("(", [keyword: "if"], tail)
-    {children,tail} = Jack.Expressions.expression(children,tail)
+    {children, tail} = Jack.Expressions.expression(children,tail)
     {children, tail} = sym(")", children, tail)
     {children, tail} = sym("{", children, tail)
-    {children,tail} = parse(children,tail)
+    {children, tail} = parse(children,tail)
     {children, tail} = sym("}", children, tail)
+    {children, tail} = opt_else(children, tail)
     subtree = [ifStatement: children]
     {tree ++ subtree, tail}
   end
@@ -76,4 +77,12 @@ defmodule Jack.Statements do
     {tree ++ children, tail}
   end
   defp array_access_or_nil(tree, tail), do: {tree, tail}
+
+  defp opt_else(tree, [{:keyword, "else"}|tail]) do
+    {children, tail} = sym("{", [keyword: "else"], tail)
+    {children, tail} = parse(children, tail)
+    {children, tail} = sym("}", children, tail)
+    {tree ++ children, tail}
+  end
+  defp opt_else(tree, tail), do: {tree, tail}
 end
