@@ -25,13 +25,13 @@ defmodule SymbolTableTest do
         identifier: %{
           :name => "x",
           :category => "field",
-          :index => 1,
+          :index => 0,
           :definition => true},
         symbol: ",",
         identifier: %{
           :name => "y",
           :category => "field",
-          :index => 2,
+          :index => 1,
           :definition => true},
         symbol: ";"
       ],
@@ -41,7 +41,7 @@ defmodule SymbolTableTest do
         identifier: %{
           :name => "debug",
           :category => "static",
-          :index => 1,
+          :index => 0,
           :definition => true },
         symbol: ";"
       ],
@@ -72,24 +72,24 @@ defmodule SymbolTableTest do
         symbol: "(",
         parameterList: [
           keyword: "int",
-          identifier: %{:name => "argc", :category => "argument", :definition => true, :index => 1},
+          identifier: %{:name => "argc", :category => "argument", :definition => true, :index => 0},
           symbol: ",",
           keyword: "int",
-          identifier: %{:name => "argv", :category => "argument", :definition => true, :index => 2} ],
+          identifier: %{:name => "argv", :category => "argument", :definition => true, :index => 1} ],
         symbol: ")",
         subroutineBody: [
           symbol: "{",
           varDec: [
             keyword: "var",
             identifier: "String",
-            identifier: %{:name => "s", :category => "var", :definition => true, :index => 1},
+            identifier: %{:name => "s", :category => "var", :definition => true, :index => 0},
             symbol: ";" ],
           varDec: [
             keyword: "var",
             keyword: "int",
-            identifier: %{:name => "x", :category => "var", :definition => true, :index => 2},
+            identifier: %{:name => "x", :category => "var", :definition => true, :index => 1},
             symbol: ",",
-            identifier: %{:name => "y", :category => "var", :definition => true, :index => 3},
+            identifier: %{:name => "y", :category => "var", :definition => true, :index => 2},
             symbol: ";"],
           statements: [],
           symbol: "}" ]
@@ -121,13 +121,13 @@ defmodule SymbolTableTest do
         identifier: %{
           :name => "x",
           :category => "field",
-          :index => 1,
+          :index => 0,
           :definition => true},
         symbol: ",",
         identifier: %{
           :name => "y",
           :category => "field",
-          :index => 2,
+          :index => 1,
           :definition => true},
         symbol: ";"
       ],
@@ -138,27 +138,27 @@ defmodule SymbolTableTest do
         symbol: "(",
         parameterList: [
           keyword: "int",
-          identifier: %{:name => "argc", :category => "argument", :definition => true, :index => 1} ],
+          identifier: %{:name => "argc", :category => "argument", :definition => true, :index => 0} ],
         symbol: ")",
         subroutineBody: [
           symbol: "{",
           varDec: [
             keyword: "var",
             keyword: "int",
-            identifier: %{:name => "z", :category => "var", :definition => true, :index => 1},
+            identifier: %{:name => "z", :category => "var", :definition => true, :index => 0},
             symbol: ";"
           ],
           statements: [
             letStatement: [
               keyword: "let",
-              identifier: %{:name => "z", :category => "var", :definition => false, :index => 1},
+              identifier: %{:name => "z", :category => "var", :definition => false, :index => 0},
               symbol: "=",
               expression: [
-                term: [identifier: %{:name => "x", :category => "field", :definition => false, :index => 1}],
+                term: [identifier: %{:name => "x", :category => "field", :definition => false, :index => 0}],
                 symbol: "+",
-                term: [identifier: %{:name => "y", :category => "field", :definition => false, :index => 2}],
+                term: [identifier: %{:name => "y", :category => "field", :definition => false, :index => 1}],
                 symbol: "+",
-                term: [identifier: %{:name => "argc", :category => "argument", :definition => false, :index => 1}]
+                term: [identifier: %{:name => "argc", :category => "argument", :definition => false, :index => 0}]
               ],
               symbol: ";"]
           ],

@@ -32,10 +32,57 @@ defmodule IntegrationTest do
     assert compile(jack) == expected
   end
 
+  test "basic if" do
+    jack = """
+      class Main {
+        function void main() {
+          var boolean loop;
+          let loop = true;
+          if( loop) {
+            do Memory.poke(8000 + 1, 1);
+          } else {
+            do Memory.poke(8000 + 1, 2);
+          }
+          return;
+        }
+      }
+    """
+
+    expected = """
+      function Main.main 1
+      push constant 0
+      not
+      pop local 0
+      push local 0
+      if-goto IF_TRUE0
+      goto IF_FALSE0
+      label IF_TRUE0
+      push constant 8000
+      push constant 1
+      add
+      push constant 1
+      call Memory.poke 2
+      pop temp 0
+      goto IF_END0
+      label IF_FALSE0
+      push constant 8000
+      push constant 1
+      add
+      push constant 2
+      call Memory.poke 2
+      pop temp 0
+      label IF_END0
+      push constant 0
+      return
+    """ |> strip_instructions
+
+    assert jack |> compile == expected
+  end
+
   test "ConvertToBin" do
     jack = "test/fixtures/ConvertToBin/Main.jack" |> File.read!
     expected ="test/fixtures/ConvertToBin/Main.vm" |> File.read! |> strip_instructions
 
-    assert compile(jack)
+    assert compile(jack) == expected
   end
 end

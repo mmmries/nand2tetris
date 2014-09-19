@@ -22,6 +22,16 @@ defmodule Jack.Compiler do
   defp a2i([{:integerConstant, i}],[:term|_tail]) do
     ["push constant #{i}"]
   end
+  defp a2i([{:keyword, "true"}],[:term|_tail]) do
+    ["push constant 0","not"]
+  end
+  defp a2i([{:keyword, "false"}],[:term|_tail]) do
+    ["push constant 0"]
+  end
+  defp a2i([{:identifier,%{category: "var", index: i}}|tail], [:letStatement|_p] = path) do
+    instructions = a2i(tail,path)
+    instructions ++ ["pop local #{i}"]
+  end
   defp a2i([{:identifier,%{name: name, class: class, category: "subroutine", definition: true}}|tail], path) do
     instructions = a2i(tail,path)
     ["function #{class}.#{name} 0"|instructions]

@@ -36,7 +36,7 @@ defmodule Jack.SymbolTable do
     {[{:keyword, kw},type|tail],syms}
   end
   defp cvd([{:identifier,id}|tail], syms, %{:category => c}=temp) do
-    idx = (syms |> Dict.get(c) |> Dict.size) + 1
+    idx = syms |> Dict.get(c) |> Dict.size
     id_map = %{ :category => c, :name => id, :definition => true, :index => idx }
     syms = Dict.update!(syms, c, &(Dict.put_new(&1,id,id_map)))
     {tail, syms} = cvd(tail, syms, temp)
@@ -75,7 +75,7 @@ defmodule Jack.SymbolTable do
     {[{:keyword,"var"}|tail], syms}
   end
   defp params([type,{:identifier, id}|tail],syms) do
-    idx = (syms |> Dict.get("argument") |> Dict.size) + 1
+    idx = syms |> Dict.get("argument") |> Dict.size
     id_map = %{:name => id, :category => "argument", :index => idx, :definition => true}
     syms = Dict.update!(syms, "argument", &(Dict.put_new(&1,id,id_map)))
     {tail, syms} = params(tail, syms)
@@ -108,7 +108,7 @@ defmodule Jack.SymbolTable do
     {[{:keyword, "var"},type|tail],syms}
   end
   defp vd([{:identifier,id}|tail], syms) do
-    idx = (syms |> Dict.get("var") |> Dict.size) + 1
+    idx = syms |> Dict.get("var") |> Dict.size
     id_map = %{ :category => "var", :name => id, :definition => true, :index => idx }
     syms = Dict.update!(syms, "var", &(Dict.put_new(&1,id,id_map)))
     {tail, syms} = vd(tail, syms)
