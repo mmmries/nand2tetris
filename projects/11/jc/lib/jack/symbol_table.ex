@@ -50,8 +50,9 @@ defmodule Jack.SymbolTable do
   defp sub([], syms), do: {[], syms}
   defp sub([{:keyword,kw},type,{:identifier,id}|tail], syms) when (kw in ["function","method"]) do
     %{"class" => class} = syms
-    id_map = %{:name => id, :category => "subroutine", :definition => true, :class => class}
     {tail,syms} = sub(tail, syms)
+    local_vars = syms |> Dict.get("var") |> Dict.size
+    id_map = %{:name => id, :category => "subroutine", :definition => true, :class => class, :local_vars => local_vars}
     {[{:keyword,kw},type,{:identifier, id_map}|tail], syms}
   end
   defp sub([{:parameterList,params}|tail], syms) do

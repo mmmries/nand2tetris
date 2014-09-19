@@ -68,7 +68,7 @@ defmodule SymbolTableTest do
       subroutineDec: [
         keyword: "function",
         keyword: "void",
-        identifier: %{ :name => "main", :category => "subroutine", :definition => true, :class => "Simple"},
+        identifier: %{ :name => "main", :category => "subroutine", :definition => true, :class => "Simple", :local_vars => 3},
         symbol: "(",
         parameterList: [
           keyword: "int",
@@ -134,7 +134,7 @@ defmodule SymbolTableTest do
       subroutineDec: [
         keyword: "function",
         keyword: "void",
-        identifier: %{ :name => "main", :category => "subroutine", :definition => true, :class => "Simple"},
+        identifier: %{ :name => "main", :category => "subroutine", :definition => true, :class => "Simple", :local_vars => 1},
         symbol: "(",
         parameterList: [
           keyword: "int",

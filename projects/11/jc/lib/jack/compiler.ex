@@ -32,9 +32,9 @@ defmodule Jack.Compiler do
     instructions = a2i(tail,path)
     instructions ++ ["pop local #{i}"]
   end
-  defp a2i([{:identifier,%{name: name, class: class, category: "subroutine", definition: true}}|tail], path) do
+  defp a2i([{:identifier,%{name: name, class: class, category: "subroutine", definition: true, local_vars: vars}}|tail], path) do
     instructions = a2i(tail,path)
-    ["function #{class}.#{name} 0"|instructions]
+    ["function #{class}.#{name} #{vars}"|instructions]
   end
   defp a2i([{:identifier,%{name: name, class: class, category: "subroutine", definition: false}}|tail], path) do
     setup = a2i(tail, path)
