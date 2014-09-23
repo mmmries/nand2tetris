@@ -12,6 +12,7 @@ defmodule IfCollapserTest do
       symbol: "}"]]
 
     expected = [ifStatement: %{
+      index: 0,
       condition: [term: [identifier: %{category: "var", definition: false, index: 1, name: "loop"}]],
       true_statements: [doStatement: [keyword: "do", identifier: %{category: "subroutine", class: "Memory", definition: false, name: "poke"}, symbol: "(", expressionList: [expression: [term: [integerConstant: "8000"], symbol: "+", term: [integerConstant: "1"]], symbol: ",", expression: [term: [integerConstant: "1"]]], symbol: ")", symbol: ";"]],
       false_statements: [doStatement: [keyword: "do", identifier: %{category: "subroutine", class: "Memory", definition: false, name: "poke"}, symbol: "(", expressionList: [expression: [term: [integerConstant: "8000"], symbol: "+", term: [integerConstant: "1"]], symbol: ",", expression: [term: [integerConstant: "2"]]], symbol: ")", symbol: ";"]]

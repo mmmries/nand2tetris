@@ -9,7 +9,8 @@ defmodule Mix.Tasks.Parse do
       Enum.join("\n") |>
       Jack.Tokenizer.tokenize |>
       Jack.Parser.parse |>
-      Jack.SymbolTable.resolve
+      Jack.SymbolTable.resolve |>
+      Jack.IfCollapser.collapse
     IO.puts inspect(ast)
   end
 

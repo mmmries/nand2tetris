@@ -8,6 +8,7 @@ defmodule Jack.Compiler do
       tokenize |>
       parse |>
       resolve |>
+      Jack.IfCollapser.collapse |>
       a2i([])
   end
 
@@ -28,6 +29,9 @@ defmodule Jack.Compiler do
   defp a2i([{:keyword, "false"}],[:term|_tail]) do
     ["push constant 0"]
   end
+  defp a2i([{:identifier,%{category: "var", index: i}}|tail], [:term|_tail]) do
+    ["push local #{i}"]
+  end
   defp a2i([{:identifier,%{category: "var", index: i}}|tail], [:letStatement|_p] = path) do
     instructions = a2i(tail,path)
     instructions ++ ["pop local #{i}"]
@@ -44,6 +48,19 @@ defmodule Jack.Compiler do
     setup_and_call = a2i(statement,[:doStatement,path])
     rest = a2i(tail,path)
     setup_and_call ++ ["pop temp 0"] ++ rest
+  end
+  defp a2i([{:ifStatement,if_map}|tail], path) do
+    %{
+      condition: condition,
+      false_statements: false_statements,
+      true_statements: true_statements} = if_map
+    instructions = a2i(condition, [:ifStatement|path])
+    instructions = instructions ++ ["if-goto IF_TRUE0","goto IF_FALSE0","label IF_TRUE0"]
+    instructions = instructions ++ a2i(true_statements,[:ifStatement,path])
+    instructions = instructions ++ ["goto IF_END0","label IF_FALSE0"]
+    instructions = instructions ++ a2i(false_statements,[:ifStatement,path])
+    instructions = instructions ++ ["label IF_END0"]
+    instructions ++ a2i(tail, path)
   end
   defp a2i([{:returnStatement,_val}|tail], path) do
     instructions = a2i(tail,path)
