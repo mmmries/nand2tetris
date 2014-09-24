@@ -30,6 +30,12 @@ defmodule Jack.Collapser do
     {tail, counts} = collapse(tail, counts)
     {[{:whileStatement, map}|tail], counts}
   end
+  def collapse([{:subroutineDec, dec}|tail], counts) do
+    counts = %{counts | ifs: 0, whiles: 0} #rest counts per subroutine
+    {dec, counts} = collapse(dec, counts)
+    {tail, counts} = collapse(tail, counts)
+    {[{:subroutineDec,dec}|tail],counts}
+  end
   def collapse([],counts), do: {[], counts}
   def collapse([{type,list}|tail],counts) when is_list(list) do
     {list, counts} = collapse(list, counts)
