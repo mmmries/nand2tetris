@@ -38,10 +38,10 @@ defmodule Jack.Compiler do
   defp a2i([{:keyword, "false"}],[:term|_tail]) do
     ["push constant 0"]
   end
-  defp a2i([{:identifiee,%{category: "var", index: i}}|[]], [:term|_tail]) do
+  defp a2i([{:identifier,%{category: "var", index: i}}|_ast], [:term|_tail]) do
     ["push local #{i}"]
   end
-  defp a2i([{:identifier,%{category: "argument", index: i}}|[]], [:term|_tail]) do
+  defp a2i([{:identifier,%{category: "argument", index: i}}|_ast], [:term|_tail]) do
     ["push argument #{i}"]
   end
   defp a2i([{:identifier,%{category: "var", index: i}}|tail], [:letStatement|_p] = path) do
