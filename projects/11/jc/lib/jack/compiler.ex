@@ -48,6 +48,11 @@ defmodule Jack.Compiler do
     instructions = a2i(tail,path)
     instructions ++ ["pop local #{i}"]
   end
+  defp a2i([{:identifier,%{category: "argument", index: i}}|tail], [:letStatement|_p] = path) do
+    instructions = a2i(tail,path)
+    instructions ++ ["pop argument #{i}"]
+  end
+
   defp a2i([{:identifier,%{name: name, class: class, category: "subroutine", definition: true, local_vars: vars}}|tail], path) do
     instructions = a2i(tail,path)
     ["function #{class}.#{name} #{vars}"|instructions]
@@ -85,9 +90,10 @@ defmodule Jack.Compiler do
     tail = a2i(tail,path)
     ["label WHILE_EXP#{index}"] ++ condition ++ ["not","if-goto WHILE_END#{index}"] ++ statements ++ ["goto WHILE_EXP#{index}","label WHILE_END#{index}"] ++ tail
   end
-  defp a2i([{:returnStatement,_val}|tail], path) do
+  defp a2i([{:returnStatement,val}|tail], path) do
+    return_value = return_value(val)
     instructions = a2i(tail,path)
-    ["push constant 0","return"|instructions]
+    return_value ++ ["return"|instructions]
   end
   defp a2i([{type, list}|tail],path) when is_list(list) do
     sub_instructions = a2i(list,[type|path])
@@ -104,4 +110,7 @@ defmodule Jack.Compiler do
   defp op_to_instruction("="), do: ["eq"]
   defp op_to_instruction("&"), do: ["and"]
   defp op_to_instruction("|"), do: ["or"]
+
+  defp return_value([keyword: "return", symbol: ";"]), do: ["push constant 0"]
+  defp return_value(ast), do: a2i(ast,[:returnStatement])
 end
