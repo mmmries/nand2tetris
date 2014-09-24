@@ -18,7 +18,8 @@ defmodule Jack.Compiler do
     op = op_to_instruction(op)
     is1 = a2i(t1, [:term|path])
     is2 = a2i(t2, [:term|path])
-    is1 ++ is2 ++ op
+    tail = a2i(tail, path)
+    is1 ++ is2 ++ op ++ tail
   end
   defp a2i([{:symbol,"~"},{:term,t}|tail], path) do
     is = a2i(t,[:term,path])
@@ -37,10 +38,10 @@ defmodule Jack.Compiler do
   defp a2i([{:keyword, "false"}],[:term|_tail]) do
     ["push constant 0"]
   end
-  defp a2i([{:identifier,%{category: "var", index: i}}|tail], [:term|_tail]) do
+  defp a2i([{:identifiee,%{category: "var", index: i}}|[]], [:term|_tail]) do
     ["push local #{i}"]
   end
-  defp a2i([{:identifier,%{category: "argument", index: i}}|tail], [:term|_tail]) do
+  defp a2i([{:identifier,%{category: "argument", index: i}}|[]], [:term|_tail]) do
     ["push argument #{i}"]
   end
   defp a2i([{:identifier,%{category: "var", index: i}}|tail], [:letStatement|_p] = path) do
