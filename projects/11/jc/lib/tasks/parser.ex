@@ -10,7 +10,7 @@ defmodule Mix.Tasks.Parse do
       Jack.Tokenizer.tokenize |>
       Jack.Parser.parse |>
       Jack.SymbolTable.resolve |>
-      Jack.IfCollapser.collapse
+      Jack.Collapser.collapse
     IO.puts inspect(ast)
   end
 
