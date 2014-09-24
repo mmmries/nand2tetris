@@ -40,9 +40,9 @@ defmodule Jack.Compiler do
     instructions = a2i(tail,path)
     ["function #{class}.#{name} #{vars}"|instructions]
   end
-  defp a2i([{:identifier,%{name: name, class: class, category: "subroutine", definition: false}}|tail], path) do
+  defp a2i([{:identifier,%{name: name, class: class, category: "subroutine", definition: false, numArgs: numArgs}}|tail], path) do
     setup = a2i(tail, path)
-    setup ++ ["call #{class}.#{name} 1"]
+    setup ++ ["call #{class}.#{name} #{numArgs}"]
   end
   defp a2i([{:doStatement,statement}|tail], path) do
     setup_and_call = a2i(statement,[:doStatement,path])

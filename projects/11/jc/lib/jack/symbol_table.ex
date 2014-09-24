@@ -130,12 +130,14 @@ defmodule Jack.SymbolTable do
   end
   defp statements([{:identifier,receiver},{:symbol,"."},{:identifier,method},{:symbol,"("}|tail], syms) do
     %{name: class} = resolve_or_class(receiver,syms)
-    method_map = %{:name => method, :class => class, :category => "subroutine", :definition => false}
+    [{:expressionList,list}|_tt] = tail
+    method_map = %{:name => method, :class => class, :category => "subroutine", :definition => false, :numArgs => div(Enum.count(list)+1,2)}
     {tail, syms} = statements(tail, syms)
     {[{:identifier, method_map},{:symbol,"("}|tail],syms}
   end
   defp statements([{:identifier,id},{:symbol,"("}|tail], syms) do
-    id_map = %{:name => id, :category => "subroutine", :definition => false}
+    [{:expressionList,list}|_tt] = tail
+    id_map = %{:name => id, :category => "subroutine", :definition => false, :numArgs => div(Enum.count(list)+1,2)}
     {tail, syms} = statements(tail, syms)
     {[{:identifier, id_map},{:symbol,"("}|tail],syms}
   end

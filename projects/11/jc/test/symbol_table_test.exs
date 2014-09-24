@@ -199,14 +199,14 @@ defmodule SymbolTableTest do
       first_by_type(:statements) |>
       first_by_type(:doStatement) |>
       first_by_type(:identifier)
-    assert id == %{:name => "draw", :category => "subroutine", :definition => false}
+    assert id == %{:name => "draw", :category => "subroutine", :definition => false, :numArgs => 0}
   end
 
   test "can call functions with explicit receiver" do
     jack = """
       class Simple{
         function void main(String x){
-          do Memory.deAlloc(this);
+          do Memory.deAlloc(this, 2);
           do x.challenge();
         }
       }
@@ -219,12 +219,12 @@ defmodule SymbolTableTest do
     method = statements |>
       first_by_type(:doStatement) |>
       first_by_type(:identifier)
-    assert method == %{:name => "deAlloc", :class => "Memory", :category => "subroutine", :definition => false}
+    assert method == %{:name => "deAlloc", :class => "Memory", :category => "subroutine", :definition => false, :numArgs => 2}
 
     method = statements |>
       last_by_type(:doStatement) |>
       first_by_type(:identifier)
-    assert method == %{:name => "challenge", :class => "x", :category => "subroutine", :definition => false}
+    assert method == %{:name => "challenge", :class => "x", :category => "subroutine", :definition => false, :numArgs => 0}
   end
 
   def by_type(ast, type) do
