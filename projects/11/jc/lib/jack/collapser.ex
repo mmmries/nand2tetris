@@ -1,6 +1,6 @@
 defmodule Jack.Collapser do
   def collapse(ast) do
-    {ast, _counts} = collapse(ast, %{ifs: 0})
+    {ast, _counts} = collapse(ast, %{ifs: 0, whiles: 0})
     ast
   end
 
@@ -8,7 +8,7 @@ defmodule Jack.Collapser do
     {condition, statement} = condition(statement)
     {true_statements, statement} = statements(statement)
     {true_statements, counts} = collapse(true_statements, %{counts | ifs: count+1})
-    {else_or_empty, _statement} = else_or_empty(statement)
+    {else_or_empty, []} = else_or_empty(statement)
     {else_or_empty, counts} = collapse(else_or_empty, counts)
     map = %{
       index: count,
@@ -18,6 +18,17 @@ defmodule Jack.Collapser do
     }
     {tail,counts} = collapse(tail,counts)
     {[{:ifStatement, map}|tail], counts}
+  end
+  def collapse([{:whileStatement, statement}|tail], %{whiles: count}=counts) do
+    {condition, statement} = condition(statement)
+    {statements, []} = statements(statement)
+    {statements, counts} = collapse(statements, %{counts | whiles: count+1})
+    map = %{
+      index: count,
+      condition: condition,
+      statements: statements }
+    {tail, counts} = collapse(tail, counts)
+    {[{:whileStatement, map}|tail], counts}
   end
   def collapse([],counts), do: {[], counts}
   def collapse([{type,list}|tail],counts) when is_list(list) do
@@ -31,6 +42,9 @@ defmodule Jack.Collapser do
   end
 
   defp condition([{:keyword,"if"},{:symbol,"("},{:expression,exp},{:symbol,")"}| tail]) do
+    {exp, tail}
+  end
+  defp condition([{:keyword,"while"},{:symbol,"("},{:expression,exp},{:symbol,")"}| tail]) do
     {exp, tail}
   end
 
