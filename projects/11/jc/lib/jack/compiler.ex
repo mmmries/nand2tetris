@@ -20,6 +20,14 @@ defmodule Jack.Compiler do
     is2 = a2i(t2, [:term|path])
     is1 ++ is2 ++ op
   end
+  defp a2i([{:symbol,"~"},{:term,t}|tail], path) do
+    is = a2i(t,[:term,path])
+    is ++ ["not"] ++ a2i(tail,path)
+  end
+  defp a2i([{:symbol,"-"},{:term,t}|tail], path) do
+    is = a2i(t,[:term,path])
+    is ++ ["neg"] ++ a2i(tail,path)
+  end
   defp a2i([{:integerConstant, i}],[:term|_tail]) do
     ["push constant #{i}"]
   end
@@ -74,7 +82,11 @@ defmodule Jack.Compiler do
   defp a2i([_head|tail],path), do: a2i(tail,path)
 
   defp op_to_instruction("+"), do: ["add"]
+  defp op_to_instruction("-"), do: ["sub"]
   defp op_to_instruction("*"), do: ["call Math.multiply 2"]
   defp op_to_instruction("<"), do: ["lt"]
   defp op_to_instruction(">"), do: ["gt"]
+  defp op_to_instruction("="), do: ["eq"]
+  defp op_to_instruction("&"), do: ["and"]
+  defp op_to_instruction("|"), do: ["or"]
 end
