@@ -75,4 +75,6 @@ defmodule Jack.Compiler do
 
   defp op_to_instruction("+"), do: ["add"]
   defp op_to_instruction("*"), do: ["call Math.multiply 2"]
+  defp op_to_instruction("<"), do: ["lt"]
+  defp op_to_instruction(">"), do: ["gt"]
 end
