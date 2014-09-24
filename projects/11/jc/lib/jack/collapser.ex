@@ -1,4 +1,4 @@
-defmodule Jack.IfCollapser do
+defmodule Jack.Collapser do
   def collapse(ast) do
     {ast, _counts} = collapse(ast, %{ifs: 0})
     ast

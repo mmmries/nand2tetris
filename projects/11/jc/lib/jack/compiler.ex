@@ -8,7 +8,7 @@ defmodule Jack.Compiler do
       tokenize |>
       parse |>
       resolve |>
-      Jack.IfCollapser.collapse |>
+      Jack.Collapser.collapse |>
       a2i([])
   end
 
