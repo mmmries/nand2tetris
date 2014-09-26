@@ -85,4 +85,25 @@ defmodule IntegrationTest do
 
     assert compile(jack) == expected
   end
+
+  test "Square/Main" do
+    jack = "test/fixtures/Square/Main.jack" |> File.read!
+    expected ="test/fixtures/Square/Main.vm" |> File.read! |> strip_instructions
+
+    assert compile(jack) == expected
+  end
+
+  test "Square/Square" do
+    jack = "test/fixtures/Square/Square.jack" |> File.read!
+    expected ="test/fixtures/Square/Square.vm" |> File.read! |> strip_instructions
+
+    assert compile(jack) == expected
+  end
+
+  test "Square/SquareGame" do
+    jack = "test/fixtures/Square/SquareGame.jack" |> File.read!
+    expected ="test/fixtures/Square/SquareGame.vm" |> File.read! |> strip_instructions
+
+    assert compile(jack) == expected
+  end
 end
