@@ -135,9 +135,9 @@ defmodule Jack.SymbolTable do
     {tail, syms} = statements(tail, syms)
     {[{:identifier, method_map},{:symbol,"("}|tail],syms}
   end
-  defp statements([{:identifier,id},{:symbol,"("}|tail], syms) do
+  defp statements([{:identifier,id},{:symbol,"("}|tail], %{"class" => class} = syms) do
     [{:expressionList,list}|_tt] = tail
-    id_map = %{:name => id, :category => "subroutine", :definition => false, :numArgs => div(Enum.count(list)+1,2)}
+    id_map = %{:name => id, :category => "subroutine", :class => class, :definition => false, :numArgs => div(Enum.count(list)+2,2), :receiver => :this}
     {tail, syms} = statements(tail, syms)
     {[{:identifier, id_map},{:symbol,"("}|tail],syms}
   end

@@ -26,13 +26,15 @@ defmodule SymbolTableTest do
           :name => "x",
           :category => "field",
           :index => 0,
-          :definition => true},
+          :definition => true,
+          :type => "int"},
         symbol: ",",
         identifier: %{
           :name => "y",
           :category => "field",
           :index => 1,
-          :definition => true},
+          :definition => true,
+          :type => "int"},
         symbol: ";"
       ],
       classVarDec: [
@@ -42,7 +44,8 @@ defmodule SymbolTableTest do
           :name => "debug",
           :category => "static",
           :index => 0,
-          :definition => true },
+          :definition => true,
+          :type => "String"},
         symbol: ";"
       ],
       symbol: "}"
@@ -72,24 +75,24 @@ defmodule SymbolTableTest do
         symbol: "(",
         parameterList: [
           keyword: "int",
-          identifier: %{:name => "argc", :category => "argument", :definition => true, :index => 0},
+          identifier: %{:name => "argc", :category => "argument", :definition => true, :index => 0, :type => "int"},
           symbol: ",",
           keyword: "int",
-          identifier: %{:name => "argv", :category => "argument", :definition => true, :index => 1} ],
+          identifier: %{:name => "argv", :category => "argument", :definition => true, :index => 1, :type => "int"} ],
         symbol: ")",
         subroutineBody: [
           symbol: "{",
           varDec: [
             keyword: "var",
             identifier: "String",
-            identifier: %{:name => "s", :category => "var", :definition => true, :index => 0},
+            identifier: %{:name => "s", :category => "var", :definition => true, :index => 0, :type => "String"},
             symbol: ";" ],
           varDec: [
             keyword: "var",
             keyword: "int",
-            identifier: %{:name => "x", :category => "var", :definition => true, :index => 1},
+            identifier: %{:name => "x", :category => "var", :definition => true, :index => 1, :type => "int"},
             symbol: ",",
-            identifier: %{:name => "y", :category => "var", :definition => true, :index => 2},
+            identifier: %{:name => "y", :category => "var", :definition => true, :index => 2, :type => "int"},
             symbol: ";"],
           statements: [],
           symbol: "}" ]
@@ -122,13 +125,15 @@ defmodule SymbolTableTest do
           :name => "x",
           :category => "field",
           :index => 0,
-          :definition => true},
+          :definition => true,
+          :type => "int"},
         symbol: ",",
         identifier: %{
           :name => "y",
           :category => "field",
           :index => 1,
-          :definition => true},
+          :definition => true,
+          :type => "int"},
         symbol: ";"
       ],
       subroutineDec: [
@@ -138,27 +143,27 @@ defmodule SymbolTableTest do
         symbol: "(",
         parameterList: [
           keyword: "int",
-          identifier: %{:name => "argc", :category => "argument", :definition => true, :index => 0} ],
+          identifier: %{:name => "argc", :category => "argument", :definition => true, :index => 0, :type => "int"} ],
         symbol: ")",
         subroutineBody: [
           symbol: "{",
           varDec: [
             keyword: "var",
             keyword: "int",
-            identifier: %{:name => "z", :category => "var", :definition => true, :index => 0},
+            identifier: %{:name => "z", :category => "var", :definition => true, :index => 0, :type => "int"},
             symbol: ";"
           ],
           statements: [
             letStatement: [
               keyword: "let",
-              identifier: %{:name => "z", :category => "var", :definition => false, :index => 0},
+              identifier: %{:name => "z", :category => "var", :definition => false, :index => 0, :type => "int"},
               symbol: "=",
               expression: [
-                term: [identifier: %{:name => "x", :category => "field", :definition => false, :index => 0}],
+                term: [identifier: %{:name => "x", :category => "field", :definition => false, :index => 0, :type => "int"}],
                 symbol: "+",
-                term: [identifier: %{:name => "y", :category => "field", :definition => false, :index => 1}],
+                term: [identifier: %{:name => "y", :category => "field", :definition => false, :index => 1, :type => "int"}],
                 symbol: "+",
-                term: [identifier: %{:name => "argc", :category => "argument", :definition => false, :index => 0}]
+                term: [identifier: %{:name => "argc", :category => "argument", :definition => false, :index => 0, :type => "int"}]
               ],
               symbol: ";"]
           ],
@@ -199,7 +204,7 @@ defmodule SymbolTableTest do
       first_by_type(:statements) |>
       first_by_type(:doStatement) |>
       first_by_type(:identifier)
-    assert id == %{:name => "draw", :category => "subroutine", :definition => false, :numArgs => 0}
+    assert id == %{:name => "draw", :class => "Simple", :category => "subroutine", :definition => false, :numArgs => 1, :receiver => :this}
   end
 
   test "can call functions with explicit receiver" do
@@ -224,7 +229,7 @@ defmodule SymbolTableTest do
     method = statements |>
       last_by_type(:doStatement) |>
       first_by_type(:identifier)
-    assert method == %{:name => "challenge", :class => "x", :category => "subroutine", :definition => false, :numArgs => 0}
+    assert method == %{:name => "challenge", :class => "Simple", :receiver => %{:index => 0, :category => "argument"}, :category => "subroutine", :definition => false, :numArgs => 1}
   end
 
   def by_type(ast, type) do
