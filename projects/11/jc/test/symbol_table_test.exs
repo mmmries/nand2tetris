@@ -229,7 +229,7 @@ defmodule SymbolTableTest do
     method = statements |>
       last_by_type(:doStatement) |>
       first_by_type(:identifier)
-    assert method == %{:name => "challenge", :class => "Simple", :receiver => %{:index => 0, :category => "argument"}, :category => "subroutine", :definition => false, :numArgs => 1}
+    assert method == %{:name => "challenge", :class => "String", :receiver => %{definition: false, index: 0, category: "argument", name: "x", type: "String"}, :category => "subroutine", :definition => false, :numArgs => 1}
   end
 
   def by_type(ast, type) do

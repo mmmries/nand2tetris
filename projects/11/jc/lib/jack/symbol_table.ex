@@ -32,12 +32,14 @@ defmodule Jack.SymbolTable do
   defp cvd([], syms, _temp), do: {[], syms}
   defp cvd([{:keyword, kw},type|tail], syms, temp) when (kw in ["field","static"]) do
     temp = Dict.put_new(temp, :category, kw)
+    {_,type_str} = type
+    temp = Dict.put_new(temp, :type, type_str)
     {tail, syms} = cvd(tail, syms, temp)
     {[{:keyword, kw},type|tail],syms}
   end
   defp cvd([{:identifier,id}|tail], syms, %{:category => c}=temp) do
     idx = syms |> Dict.get(c) |> Dict.size
-    id_map = %{ :category => c, :name => id, :definition => true, :index => idx }
+    id_map = Dict.merge(temp, %{ :name => id, :definition => true, :index => idx })
     syms = Dict.update!(syms, c, &(Dict.put_new(&1,id,id_map)))
     {tail, syms} = cvd(tail, syms, temp)
     {[{:identifier, id_map}|tail], syms}
@@ -71,13 +73,10 @@ defmodule Jack.SymbolTable do
   end
 
   defp params([],syms), do: {[],syms}
-  defp params([{:keyword, "var"}|tail],syms) do
-    {tail, syms} = params(tail, syms)
-    {[{:keyword,"var"}|tail], syms}
-  end
   defp params([type,{:identifier, id}|tail],syms) do
     idx = syms |> Dict.get("argument") |> Dict.size
-    id_map = %{:name => id, :category => "argument", :index => idx, :definition => true}
+    {_,type_str} = type
+    id_map = %{:name => id, :category => "argument", :index => idx, :definition => true, :type => type_str}
     syms = Dict.update!(syms, "argument", &(Dict.put_new(&1,id,id_map)))
     {tail, syms} = params(tail, syms)
     {[type,{:identifier,id_map}|tail], syms}
@@ -89,7 +88,7 @@ defmodule Jack.SymbolTable do
 
   defp body([],syms), do: {[],syms}
   defp body([{:varDec,dec}|tail], syms) do
-    {dec, syms} = vd(dec, syms)
+    {dec, syms} = vd(dec, syms, %{})
     {tail, syms} = body(tail, syms)
     {[{:varDec,dec}|tail],syms}
   end
@@ -103,20 +102,22 @@ defmodule Jack.SymbolTable do
     {[head|tail], syms}
   end
 
-  defp vd([], syms), do: {[], syms}
-  defp vd([{:keyword, "var"},type|tail], syms) do
-    {tail, syms} = vd(tail, syms)
+  defp vd([], syms, _temp), do: {[], syms}
+  defp vd([{:keyword, "var"},type|tail], syms, temp) do
+    {_,type_str} = type
+    temp = Dict.put_new(temp, :type, type_str)
+    {tail, syms} = vd(tail, syms, temp)
     {[{:keyword, "var"},type|tail],syms}
   end
-  defp vd([{:identifier,id}|tail], syms) do
+  defp vd([{:identifier,id}|tail], syms, temp) do
     idx = syms |> Dict.get("var") |> Dict.size
-    id_map = %{ :category => "var", :name => id, :definition => true, :index => idx }
+    id_map = Dict.merge(temp, %{ :category => "var", :name => id, :definition => true, :index => idx })
     syms = Dict.update!(syms, "var", &(Dict.put_new(&1,id,id_map)))
-    {tail, syms} = vd(tail, syms)
+    {tail, syms} = vd(tail, syms, temp)
     {[{:identifier, id_map}|tail], syms}
   end
-  defp vd([head|tail], syms) do
-    {tail, syms} = vd(tail, syms)
+  defp vd([head|tail], syms, temp) do
+    {tail, syms} = vd(tail, syms, temp)
     {[head|tail], syms}
   end
 
@@ -129,9 +130,13 @@ defmodule Jack.SymbolTable do
     {[{type,list}|tail], syms}
   end
   defp statements([{:identifier,receiver},{:symbol,"."},{:identifier,method},{:symbol,"("}|tail], syms) do
-    %{name: class} = resolve_or_class(receiver,syms)
-    [{:expressionList,list}|_tt] = tail
-    method_map = %{:name => method, :class => class, :category => "subroutine", :definition => false, :numArgs => div(Enum.count(list)+1,2)}
+    [{:expressionList,list}|_] = tail
+    explicit_args = div(Enum.count(list)+1,2)
+    method_map = %{:name => method, :category => "subroutine", :definition => false, :numArgs => explicit_args}
+    method_map = case resolve_or_class(receiver,syms) do
+      %{category: "class", name: class} -> Dict.merge(method_map, %{class: class})
+      %{type: type} = id -> Dict.merge(method_map, %{class: type, receiver: id, numArgs: explicit_args + 1})
+    end
     {tail, syms} = statements(tail, syms)
     {[{:identifier, method_map},{:symbol,"("}|tail],syms}
   end
