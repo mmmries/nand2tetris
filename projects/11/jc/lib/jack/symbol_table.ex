@@ -50,12 +50,28 @@ defmodule Jack.SymbolTable do
   end
 
   defp sub([], syms), do: {[], syms}
-  defp sub([{:keyword,kw},type,{:identifier,id}|tail], syms) when (kw in ["function","method"]) do
+  defp sub([{:keyword,"function"},type,{:identifier,id}|tail], syms) do
     %{"class" => class} = syms
     {tail,syms} = sub(tail, syms)
     local_vars = syms |> Dict.get("var") |> Dict.size
     id_map = %{:name => id, :category => "subroutine", :definition => true, :class => class, :local_vars => local_vars}
-    {[{:keyword,kw},type,{:identifier, id_map}|tail], syms}
+    {[{:keyword,"function"},type,{:identifier, id_map}|tail], syms}
+  end
+  defp sub([{:keyword,"method"},type,{:identifier,id}|tail], syms) do
+    %{"class" => class} = syms
+    this = %{:name => "this", :category => "argument", :index => 0, :definition => true, :type => class}
+    syms = Dict.update!(syms, "argument", &(Dict.put_new(&1,"this",this)))
+    {tail,syms} = sub(tail, syms)
+    local_vars = syms |> Dict.get("var") |> Dict.size
+    id_map = %{:name => id, :category => "method", :definition => true, :class => class, :local_vars => local_vars}
+    {[{:keyword,"method"},type,{:identifier, id_map}|tail], syms}
+  end
+  defp sub([{:keyword,"constructor"},type,{:identifier,id}|tail], %{"class" => class} = syms) do
+    {tail,syms} = sub(tail, syms)
+    local_vars = syms |> Dict.get("var") |> Dict.size
+    instance_vars = syms |> Dict.get("field") |> Dict.size
+    id_map = %{:name => id, :category => "constructor", :definition => true, :class => class, :local_vars => local_vars, :instance_vars => instance_vars}
+    {[{:keyword,"constructor"},type,{:identifier, id_map}|tail], syms}
   end
   defp sub([{:parameterList,params}|tail], syms) do
     {params, syms} = params(params,syms)

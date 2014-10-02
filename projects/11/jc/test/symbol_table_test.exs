@@ -175,6 +175,59 @@ defmodule SymbolTableTest do
     assert jack |> tokenize |> parse |> resolve == expected
   end
 
+  test "it consolidates constructor definitions" do
+    jack = """
+      class SquareGame {
+        field int x;
+        constructor SquareGame new(){
+          return this;
+        }
+      }
+    """
+    ast = jack |> tokenize |> parse |> resolve
+    constructor = ast |> first_by_type(:subroutineDec) |> last_by_type(:identifier)
+
+    assert constructor == %{category: "constructor",
+                            definition: true,
+                            name: "new",
+                            class: "SquareGame",
+                            local_vars: 0,
+                            instance_vars: 1}
+  end
+
+  test "it counts arguments for methods correctly" do
+    jack = """
+      class SquareGame {
+        method int add(int a, int b){
+          return a + b;
+        }
+      }
+    """
+    ast = jack |> tokenize |> parse |> resolve
+    method = ast |> first_by_type(:subroutineDec) |> last_by_type(:identifier)
+
+    assert method == %{category: "method",
+                            definition: true,
+                            name: "add",
+                            class: "SquareGame",
+                            local_vars: 0}
+
+    a = ast |> first_by_type(:subroutineDec) |> first_by_type(:parameterList) |> first_by_type(:identifier)
+    assert a == %{category: "argument",
+                  definition: true,
+                  name: "a",
+                  type: "int",
+                  index: 1}
+
+    b = ast |> first_by_type(:subroutineDec) |> first_by_type(:parameterList) |> last_by_type(:identifier)
+    assert b == %{category: "argument",
+                  definition: true,
+                  name: "b",
+                  type: "int",
+                  index: 2}
+  end
+
+
   test "it fails on undefined identifiers" do
     jack = """
       class Simple{
@@ -221,15 +274,15 @@ defmodule SymbolTableTest do
     statements = first_by_type(ast, :subroutineDec) |>
       first_by_type(:subroutineBody) |>
       first_by_type(:statements)
-    method = statements |>
+    function = statements |>
       first_by_type(:doStatement) |>
       first_by_type(:identifier)
-    assert method == %{:name => "deAlloc", :class => "Memory", :category => "subroutine", :definition => false, :numArgs => 2}
+    assert function == %{:name => "deAlloc", :class => "Memory", :category => "subroutine", :definition => false, :numArgs => 2}
 
-    method = statements |>
+    function = statements |>
       last_by_type(:doStatement) |>
       first_by_type(:identifier)
-    assert method == %{:name => "challenge", :class => "String", :receiver => %{definition: false, index: 0, category: "argument", name: "x", type: "String"}, :category => "subroutine", :definition => false, :numArgs => 1}
+    assert function == %{:name => "challenge", :class => "String", :receiver => %{definition: false, index: 0, category: "argument", name: "x", type: "String"}, :category => "subroutine", :definition => false, :numArgs => 1}
   end
 
   def by_type(ast, type) do
