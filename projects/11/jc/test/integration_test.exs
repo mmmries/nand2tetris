@@ -79,37 +79,47 @@ defmodule IntegrationTest do
     assert jack |> compile == expected
   end
 
-  test "ConvertToBin" do
-    jack = "test/fixtures/ConvertToBin/Main.jack" |> File.read!
-    expected ="test/fixtures/ConvertToBin/Main.vm" |> File.read! |> strip_instructions
-
-    assert compile(jack) == expected
+  test "ConvertToBin/Main" do
+    integration_test("ConvertToBin/Main.jack")
   end
 
   test "Square/Main" do
-    jack = "test/fixtures/Square/Main.jack" |> File.read!
-    expected ="test/fixtures/Square/Main.vm" |> File.read! |> strip_instructions
-
-    assert compile(jack) == expected
+    integration_test("Square/Main.jack")
   end
 
   test "Square/Square" do
-    jack = "test/fixtures/Square/Square.jack" |> File.read!
-    expected ="test/fixtures/Square/Square.vm" |> File.read! |> strip_instructions
-
-    assert compile(jack) == expected
+    integration_test("Square/Square.jack")
   end
 
   test "Square/SquareGame" do
-    jack = "test/fixtures/Square/SquareGame.jack" |> File.read!
-    expected ="test/fixtures/Square/SquareGame.vm" |> File.read! |> strip_instructions
-
-    assert compile(jack) == expected
+    integration_test("Square/SquareGame.jack")
   end
 
   test "Average/Main" do
-    jack = "test/fixtures/Average/Main.jack" |> File.read!
-    expected ="test/fixtures/Average/Main.vm" |> File.read! |> strip_instructions
+    integration_test("Average/Main.jack")
+  end
+
+  test "Pong/Ball" do
+    integration_test("Pong/Ball.jack")
+  end
+
+  test "Pong/Bat" do
+    integration_test("Pong/Bat.jack")
+  end
+
+  test "Pong/PongGame" do
+    integration_test("Pong/PongGame.jack")
+  end
+
+  test "Pong/Main" do
+    integration_test("Pong/Main.jack")
+  end
+
+  def integration_test(jack_path) do
+    jack_path = "test/fixtures/" <> jack_path
+    vm_path = String.replace(jack_path, ".jack", ".vm")
+    jack = jack_path |> File.read!
+    expected = vm_path |> File.read! |> strip_instructions
 
     assert compile(jack) == expected
   end
