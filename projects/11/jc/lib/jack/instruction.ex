@@ -35,29 +35,31 @@ defmodule Jack.Instruction do
   defp a2i([{:keyword, "this"}],[:term|_tail]) do
     ["push pointer 0"]
   end
-  defp a2i([{:identifier,%{category: "var", index: i}}|_ast], [:term|_tail]) do
-    ["push local #{i}"]
+  defp a2i([{:identifier,%{category: cat, index: i}},{:symbol,"["},{:expression, exp}|_ast], [:term|_tail]=path) do
+    location = category_to_name(cat)
+    exp = a2i(exp,path)
+    exp ++ ["push #{location} #{i}","add","pop pointer 1","push that 0"]
   end
-  defp a2i([{:identifier,%{category: "argument", index: i}}|_ast], [:term|_tail]) do
-    ["push argument #{i}"]
-  end
-  defp a2i([{:identifier,%{category: "field", index: i}}|_ast], [:term|_tail]) do
-    ["push this #{i}"]
+  defp a2i([{:identifier,%{category: cat, index: i}}|_ast], [:term|_tail]) do
+    location = category_to_name(cat)
+    ["push #{location} #{i}"]
   end
   defp a2i([{:identifier,:this}|_ast], [:term|_tail]) do
     ["push pointer 0"]
   end
-  defp a2i([{:identifier,%{category: "var", index: i}}|tail], [:letStatement|_p] = path) do
-    instructions = a2i(tail,path)
-    instructions ++ ["pop local #{i}"]
+
+  defp a2i([{:identifier,%{category: cat, index: i}},{:symbol,"["},{:expression,exp}|tail], [:letStatement|_path] = path) do
+    location = category_to_name(cat)
+    exp = a2i(exp,[:expression|path])
+    prelude = exp ++ ["push #{location} #{i}", "add"]
+    value = a2i(tail,path)
+    assignment = ["pop temp 0","pop pointer 1","push temp 0","pop that 0"]
+    prelude ++ value ++ assignment
   end
-  defp a2i([{:identifier,%{category: "argument", index: i}}|tail], [:letStatement|_p] = path) do
+  defp a2i([{:identifier,%{category: cat, index: i}}|tail], [:letStatement|_p] = path) do
+    location = category_to_name(cat)
     instructions = a2i(tail,path)
-    instructions ++ ["pop argument #{i}"]
-  end
-  defp a2i([{:identifier,%{category: "field", index: i}}|tail], [:letStatement|_p] = path) do
-    instructions = a2i(tail,path)
-    instructions ++ ["pop this #{i}"]
+    instructions ++ ["pop #{location} #{i}"]
   end
 
   defp a2i([{:identifier,%{name: name, class: class, category: "subroutine", definition: true, local_vars: vars}}|tail], path) do
@@ -145,4 +147,8 @@ defmodule Jack.Instruction do
 
   defp return_value([keyword: "return", symbol: ";"]), do: ["push constant 0"]
   defp return_value(ast), do: a2i(ast,[:returnStatement])
+
+  defp category_to_name("var"), do: "local"
+  defp category_to_name("argument"), do: "argument"
+  defp category_to_name("field"), do: "this"
 end
