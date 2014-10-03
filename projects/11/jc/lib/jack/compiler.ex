@@ -47,6 +47,12 @@ defmodule Jack.Compiler do
   defp a2i([{:identifier,%{category: "argument", index: i}}|_ast], [:term|_tail]) do
     ["push argument #{i}"]
   end
+  defp a2i([{:identifier,%{category: "field", index: i}}|_ast], [:term|_tail]) do
+    ["push this #{i}"]
+  end
+  defp a2i([{:identifier,:this}|_ast], [:term|_tail]) do
+    ["push pointer 0"]
+  end
   defp a2i([{:identifier,%{category: "var", index: i}}|tail], [:letStatement|_p] = path) do
     instructions = a2i(tail,path)
     instructions ++ ["pop local #{i}"]
@@ -67,6 +73,10 @@ defmodule Jack.Compiler do
   defp a2i([{:identifier,%{name: name, class: class, category: "constructor", definition: true, local_vars: lv, instance_vars: iv}}|tail], path) do
     instructions = a2i(tail,path)
     ["function #{class}.#{name} #{lv}", "push constant #{iv}", "call Memory.alloc 1", "pop pointer 0"|instructions]
+  end
+  defp a2i([{:identifier,%{name: name, class: class, category: "method", definition: true, local_vars: vars}}|tail], path) do
+    instructions = a2i(tail,path)
+    ["function #{class}.#{name} #{vars}", "push argument 0", "pop pointer 0"|instructions]
   end
   defp a2i([{:identifier,%{name: name, class: class, category: "subroutine", definition: false, numArgs: numArgs, receiver: receiver}}|tail], path) do
     receiver_setup = a2i([identifier: receiver], [:term | path])
