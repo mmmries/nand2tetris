@@ -106,4 +106,11 @@ defmodule IntegrationTest do
 
     assert compile(jack) == expected
   end
+
+  test "Average/Main" do
+    jack = "test/fixtures/Average/Main.jack" |> File.read!
+    expected ="test/fixtures/Average/Main.vm" |> File.read! |> strip_instructions
+
+    assert compile(jack) == expected
+  end
 end
