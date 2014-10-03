@@ -92,6 +92,17 @@ defmodule Jack.Compiler do
     rest = a2i(tail,path)
     setup_and_call ++ ["pop temp 0"] ++ rest
   end
+  defp a2i([{:ifStatement,%{false_statements: []}=if_map}|tail], path) do
+    %{
+      condition: condition,
+      true_statements: true_statements,
+      index: index} = if_map
+    instructions = a2i(condition, [:ifStatement|path])
+    instructions = instructions ++ ["if-goto IF_TRUE#{index}","goto IF_FALSE#{index}","label IF_TRUE#{index}"]
+    instructions = instructions ++ a2i(true_statements,[:ifStatement,path])
+    instructions = instructions ++ ["label IF_FALSE#{index}"]
+    instructions ++ a2i(tail, path)
+  end
   defp a2i([{:ifStatement,if_map}|tail], path) do
     %{
       condition: condition,
