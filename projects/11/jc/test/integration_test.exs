@@ -115,6 +115,10 @@ defmodule IntegrationTest do
     integration_test("Pong/Main.jack")
   end
 
+  test "ComplexArrays/Main" do
+    integration_test("ComplexArrays/Main.jack")
+  end
+
   def integration_test(jack_path) do
     jack_path = "test/fixtures/" <> jack_path
     vm_path = String.replace(jack_path, ".jack", ".vm")
