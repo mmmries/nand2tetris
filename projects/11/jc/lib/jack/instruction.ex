@@ -6,8 +6,14 @@ defmodule Jack.Instruction do
     op = op_to_instruction(op)
     is1 = a2i(t1, [:term|path])
     is2 = a2i(t2, [:term|path])
-    tail = a2i(tail, path)
+    tail = a2i(tail, [:op?|path])
     is1 ++ is2 ++ op ++ tail
+  end
+  defp a2i([{:symbol,op},{:term,t}|tail], [:op?|_t]=path) do
+    op = op_to_instruction(op)
+    term = a2i(t, [:term|path])
+    tail = a2i(tail, path)
+    term ++ op ++ tail
   end
   defp a2i([{:symbol,"~"},{:term,t}|tail], path) do
     is = a2i(t,[:term,path])
