@@ -245,8 +245,8 @@ defmodule SymbolTableTest do
   test "can call functions with implicit receiver" do
     jack = """
       class Simple{
-        function void main(){
-          do draw();
+        function void main(int x, int y){
+          do draw(x, y);
         }
       }
     """
@@ -257,7 +257,7 @@ defmodule SymbolTableTest do
       first_by_type(:statements) |>
       first_by_type(:doStatement) |>
       first_by_type(:identifier)
-    assert id == %{:name => "draw", :class => "Simple", :category => "subroutine", :definition => false, :numArgs => 1, :receiver => :this}
+    assert id == %{:name => "draw", :class => "Simple", :category => "subroutine", :definition => false, :numArgs => 3, :receiver => :this}
   end
 
   test "can call functions with explicit receiver" do
