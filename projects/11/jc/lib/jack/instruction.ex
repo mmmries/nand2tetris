@@ -150,5 +150,6 @@ defmodule Jack.Instruction do
 
   defp category_to_name("var"), do: "local"
   defp category_to_name("argument"), do: "argument"
+  defp category_to_name("static"), do: "static"
   defp category_to_name("field"), do: "this"
 end
