@@ -31,7 +31,7 @@ defmodule Jack.Tokenizer do
   defp tokenize("null"<>jack_str, tokens), do: tokenize(jack_str, [{:keyword, "null"}|tokens])
   defp tokenize("this"<>jack_str, tokens), do: tokenize(jack_str, [{:keyword, "this"}|tokens])
   defp tokenize("let"<>jack_str, tokens), do: tokenize(jack_str, [{:keyword, "let"}|tokens])
-  defp tokenize("do"<>jack_str, tokens), do: tokenize(jack_str, [{:keyword, "do"}|tokens])
+  defp tokenize("do "<>jack_str, tokens), do: tokenize(jack_str, [{:keyword, "do"}|tokens])
   defp tokenize("if"<>jack_str, tokens), do: tokenize(jack_str, [{:keyword, "if"}|tokens])
   defp tokenize("else"<>jack_str, tokens), do: tokenize(jack_str, [{:keyword, "else"}|tokens])
   defp tokenize("while"<>jack_str, tokens), do: tokenize(jack_str, [{:keyword, "while"}|tokens])

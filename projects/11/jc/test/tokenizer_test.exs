@@ -120,4 +120,11 @@ defmodule TokenizerTest do
 
     assert tokenize(jack) == tokens
   end
+
+  test "ignores keywords in identifiers" do
+    jack = "Main.double(2)"
+    tokens = [identifier: "Main", symbol: ".", identifier: "double", symbol: "(", integerConstant: "2", symbol: ")"]
+
+    assert tokenize(jack) == tokens
+  end
 end
