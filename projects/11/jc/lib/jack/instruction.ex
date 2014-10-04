@@ -38,6 +38,9 @@ defmodule Jack.Instruction do
   defp a2i([{:keyword, "false"}],[:term|_tail]) do
     ["push constant 0"]
   end
+  defp a2i([{:keyword, "null"}],[:term|_tail]) do
+    ["push constant 0"]
+  end
   defp a2i([{:keyword, "this"}],[:term|_tail]) do
     ["push pointer 0"]
   end
